@@ -1,23 +1,31 @@
 # Silkyway
 
-## Running the Application
+## Running the Backend Application
 
 In the project directory, follow these steps to run the application:
 
-## Backend
 
 Run the following command to change current directory to backend:
 
-### `cd backend/`
-
+```bash
+cd backend/
+``````
 ### Install Dependencies
 
 Run the following command to install all the required dependencies:
 
-### `npm install`
+```bash
+npm install
+``````
 
 ### Run the Application
 
 After installing the dependencies, you can start the application by running:
 
-### `npm run start`
+```bash
+npm run start
+``````
+> To connect properly to the MongoDB please add your connection string into the .env file 
+
+
+
