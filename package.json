@@ -5,6 +5,10 @@
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
+    "start:watch": "nodemon app.js",
+    "scss:build": "sass --watch scss/index.scss:public/css/style.css",
+    "scss:watch": "sass --watch scss:public/styles",
+    "dev": "npm run scss:watch server:watch",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -15,6 +19,9 @@
     "dotenv": "^16.4.5",
     "express": "^4.19.1",
     "mongodb": "^6.5.0",
-    "mongoose": "^8.2.3"
+    "mongoose": "^8.2.3",
+    "node-sass": "^9.0.0",
+    "nodemon": "^3.1.0",
+    "sass": "^1.75.0"
   }
 }

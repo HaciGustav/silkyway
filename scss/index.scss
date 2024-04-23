@@ -1,0 +1,6 @@
+@import '_colors';
+@import '_layout';
+@import '_forms';
+
+html, body{margin: 0; padding: 0; background-color: $bg-main;}
+h1{text-align: center; color: $c-main;}

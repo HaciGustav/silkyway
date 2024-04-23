@@ -1,31 +1,37 @@
-# Silkyway
+#Project Folder Structure
 
-## Running the Backend Application
-
-In the project directory, follow these steps to run the application:
-
-
-Run the following command to change current directory to backend:
-
-```bash
-cd backend/
-``````
-### Install Dependencies
-
-Run the following command to install all the required dependencies:
-
-```bash
-npm install
-``````
-
-### Run the Application
-
-After installing the dependencies, you can start the application by running:
-
-```bash
-npm run start
-``````
-> To connect properly to the MongoDB please add your connection string into the .env file 
-
+    project-root/
+    |
+    ├──src/
+    │ ├── controllers/
+    │ │ └── user.controller.js
+    │ │
+    │ ├── models/
+    │ │ └── user.model.js
+    │ │
+    │ ├── routes/
+    │ │ └── auth.route.js
+    │ │ └── user.route.js
+    │ │
+    │ ├── services/
+    │ │ └── // Business logic and external services integration
+    │ │
+    │ ├── config/
+    │ │ └── // Configuration files (e.g., database, environment variables)
+    │ │
+    │ ├── middleware/
+    │ │ └── // Custom middleware functions
+    │ │
+    │ ├── utils/
+    │ │ └── // Utility functions
+    │ │
+    │ |
+    |── app.js // Entry point of the Application
+    │
+    ├── node_modules/
+    │
+    ├── .gitignore
+    ├── package.json
+    └── README.md
 
 

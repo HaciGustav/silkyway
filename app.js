@@ -2,11 +2,16 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 
-const userRoute = require("./src/routes/user.routes");
-const { connectDB } = require("./src/config/db");
+const userRoute = require("./routes/user.routes");
+const { connectDB } = require("./config/db");
 
 app.use(express.json());
 app.use(cors());
+app.use(express.static('./public'))
+
+app.get('/', (req, res) => {
+  res.sendFile(__dirname + '/src/public/index.html');
+});
 
 app.use("/user", userRoute);
 
