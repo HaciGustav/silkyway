@@ -14,8 +14,8 @@ app.get("/", (req, res) => {
   res.sendFile(__dirname + "/src/public/index.html");
 });
 
-app.use("/user", userRoute);
-app.use("/products", productsRoute);
+app.use("/api/user", userRoute);
+app.use("/api/products", productsRoute);
 
 const PORT = process.env.PORT || 8080;
 
