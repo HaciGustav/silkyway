@@ -8,7 +8,7 @@ const { connectDB } = require("./api/config/db");
 
 app.use(express.json());
 app.use(cors());
-// app.use(express.static("./public"));
+app.use(express.static("./public"));
 
 app.get("/", (req, res) => {
   res.sendFile(__dirname + "/src/public/index.html");
