@@ -11,7 +11,7 @@ app.use(cors());
 app.use(express.static("./public"));
 
 app.get("/", (req, res) => {
-  res.sendFile(__dirname + "/src/public/index.html");
+  res.sendFile(__dirname + "/public/index.html");
 });
 
 app.use("/api/user", userRoute);
@@ -26,3 +26,20 @@ app.listen(PORT, () => {
 });
 
 module.exports = app;
+
+// {
+//   "version": 2,
+//   "builds": [
+//    {
+//     "src": "app.js",
+//     "use": "@vercel/node",
+//     "config": { "includeFiles": ["dist/**"] }
+//    }
+//   ],
+//   "routes": [
+//   {
+//     "src": "/(.*)",
+//     "dest": "app.js"
+//    }
+//   ]
+//  }
