@@ -2,7 +2,7 @@
 
     project-root/
     |
-    ├──src/
+    ├──api/
     │ ├── controllers/
     │ │ └── user.controller.js
     │ │
@@ -25,6 +25,10 @@
     │ ├── utils/
     │ │ └── // Utility functions
     │ │
+    │ |
+    ├──public/
+    │ |
+    │ | └──
     │ |
     |── app.js // Entry point of the Application
     │
