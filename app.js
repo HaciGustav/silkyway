@@ -21,8 +21,7 @@ app.get("/", (req, res) => {
 });
 
 const options = {
-  customCssUrl:
-    "https://raw.githubusercontent.com/ostranme/swagger-ui-themes/develop/themes/3.x/theme-newspaper.css",
+  customCssUrl: "./public/styles/swagger-ui.css",
 };
 
 app.use("/api/swagger", swaggerUi.serve, swaggerUi.setup(swaggerDoc, options));
