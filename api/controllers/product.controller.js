@@ -10,6 +10,16 @@ const getAllProducts = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+const getProductById = async (req, res) => {
+  const productID = req.params.id;
+  console.log("PARAMS===>", productID);
+  try {
+    const data = await Product.find({ _id: productID });
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 //* GET filtered products
 const getProductsByFilter = async (req, res) => {
   const { priceRange, category, name } = req.query;
@@ -152,7 +162,7 @@ const updateProduct = async (req, res) => {
     }
 
     // Check if the category exists
-    const categoryExists = await Category.findById(categoryID).exec();
+    const categoryExists = await Category.find({ categoryID }).exec();
     if (!categoryExists) {
       return res.status(400).send("Given categoryID does not exist");
     }
@@ -203,6 +213,7 @@ module.exports = {
   getAllProducts,
   getProductsByFilter,
   getProductsByCategory,
+  getProductById,
   createProduct,
   updateProduct,
   deleteProduct,

@@ -527,7 +527,7 @@
             "type": "number",
             "example": 19.99
           },
-          "category": {
+          "categoryID": {
             "type": "number",
             "example": 1
           },

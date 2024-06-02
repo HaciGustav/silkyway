@@ -17,7 +17,7 @@ const ProductModel = new Schema(
       type: Number,
       // required: true,
     },
-    category: {
+    categoryID: {
       type: Number,
     },
 

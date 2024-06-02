@@ -4,6 +4,7 @@ const {
   createProduct,
   getAllProducts,
   getProductsByFilter,
+  getProductById,
   deleteProduct,
   updateProduct,
 } = require("../controllers/product.controller");
@@ -11,7 +12,7 @@ const {
 const router = express.Router();
 
 router.get("/", getAllProducts);
-// TODO: change URL
+router.get("/:id", getProductById);
 router.get("/getProductsByFilter", getProductsByFilter);
 router.post("/", createProduct);
 
