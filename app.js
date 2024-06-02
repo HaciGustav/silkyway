@@ -3,7 +3,7 @@ const app = express();
 const cors = require("cors");
 // SWAGGER
 const swaggerUi = require("swagger-ui-express");
-const swaggerDoc = require("./swagger.json");
+const swaggerDoc = require("./api/config/swagger.json");
 
 const userRoute = require("./api/routes/user.routes");
 const productRoute = require("./api/routes/product.routes");
@@ -33,20 +33,3 @@ app.listen(PORT, () => {
 });
 
 module.exports = app;
-
-// {
-//   "version": 2,
-//   "builds": [
-//    {
-//     "src": "app.js",
-//     "use": "@vercel/node",
-//     "config": { "includeFiles": ["dist/**"] }
-//    }
-//   ],
-//   "routes": [
-//   {
-//     "src": "/(.*)",
-//     "dest": "app.js"
-//    }
-//   ]
-//  }
