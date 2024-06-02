@@ -4,3 +4,8 @@
 
 html, body{margin: 0; padding: 0; background-color: $bg-main;}
 h1{text-align: center; color: $c-main;}
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
