@@ -20,7 +20,12 @@ app.get("/", (req, res) => {
   res.sendFile(__dirname + "/public/index.html");
 });
 
-app.use("/api/swagger", swaggerUi.serve, swaggerUi.setup(swaggerDoc));
+const options = {
+  customCssUrl:
+    "https://raw.githubusercontent.com/ostranme/swagger-ui-themes/develop/themes/3.x/theme-newspaper.css",
+};
+
+app.use("/api/swagger", swaggerUi.serve, swaggerUi.setup(swaggerDoc, options));
 
 app.use("/api/users", userRoute);
 app.use("/api/products", productRoute);
