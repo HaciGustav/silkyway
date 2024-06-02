@@ -59,26 +59,6 @@ const createProduct = async (req, res) => {
   try {
     const { name, description, price, stock, images, categoryID } = req.body;
 
-    // Check if required fields are present
-    if (!name) {
-      return res.status(400).json({ message: "Product name is required" });
-    }
-    if (!price) {
-      return res.status(400).json({ message: "Product price is required" });
-    }
-    if (!images || images.length === 0) {
-      return res.status(400).json({ message: "At least one image is required" });
-    }
-    if (!categoryID) {
-      return res.status(400).json({ message: "categoryID is required" });
-    }
-
-    // Check if the category exists
-    const categoryExists = await Category.findOne({ _id: categoryID }).exec();
-    if (!categoryExists) {
-      return res.status(400).json({ message: `Category with ID ${categoryID} does not exist` });
-    }
-
     // Check if a product with the given name already exists
     const product = await Product.findOne({ name }).exec();
     if (product) {
