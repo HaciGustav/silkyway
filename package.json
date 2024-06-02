@@ -1,7 +1,7 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "description": "project-root/\r     |\r     ├──api/\r     │ ├── controllers/\r     │ │ └── user.controller.js\r     │ │\r     │ ├── models/\r     │ │ └── user.model.js\r     │ │\r     │ ├── routes/\r     │ │ └── auth.route.js\r     │ │ └── user.route.js\r     │ │\r     │ ├── services/\r     │ │ └── // Business logic and external services integration\r     │ │\r     │ ├── config/\r     │ │ └── // Configuration files (e.g., database, environment variables)\r     │ │\r     │ ├── middleware/\r     │ │ └── // Custom middleware functions\r     │ │\r     │ ├── utils/\r     │ │ └── // Utility functions\r     │ │\r     │ |\r     ├──public/\r     │ |\r     │ | └──\r     │ |\r     |── app.js // Entry point of the Application\r     │\r     ├── node_modules/\r     │\r     ├── .gitignore\r     ├── package.json\r     └── README.md",
+  "description": "",
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
@@ -21,7 +21,8 @@
     "mongodb": "^6.5.0",
     "mongoose": "^8.2.3",
     "node-sass": "^9.0.0",
-    "nodemon": "^3.1.0"
+    "nodemon": "^3.1.0",
+    "swagger-ui-express": "^5.0.0"
   },
   "devDependencies": {
     "sass": "^1.77.4"

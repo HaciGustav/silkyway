@@ -37,6 +37,6 @@ const ProductModel = new Schema(
       type: Date,
     },
   },
-  { collection: "product" }
+  { collection: "products" }
 );
 module.exports = model("Product", ProductModel);

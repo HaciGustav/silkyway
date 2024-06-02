@@ -1,21 +1,34 @@
 const Product = require("../models/product.model");
 const Category = require("../models/category.model");
 
-//* GET ALL PRODUCTS or filtered products
-//* GET ALL PRODUCTS or filtered products
-const getProducts = async (req, res) => {
+//* GET ALL PRODUCTS
+const getAllProducts = async (req, res) => {
+  try {
+    const data = await Product.find();
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+//* GET filtered products
+const getProductsByFilter = async (req, res) => {
   const { priceRange, category, name } = req.query;
 
   if (!priceRange && !category && !name) {
-    return res.status(400).json({ message: "At least one filter parameter must be provided" });
+    return res
+      .status(400)
+      .json({ message: "At least one filter parameter must be provided" });
   }
 
   let filters = {};
 
   if (priceRange) {
-    const [minPrice, maxPrice] = priceRange.split('-').map(Number);
+    const [minPrice, maxPrice] = priceRange.split("-").map(Number);
     if (isNaN(minPrice) || isNaN(maxPrice)) {
-      return res.status(400).json({ message: "Invalid priceRange format. Expected format: minPrice-maxPrice" });
+      return res.status(400).json({
+        message:
+          "Invalid priceRange format. Expected format: minPrice-maxPrice",
+      });
     }
     filters.price = { $gte: minPrice, $lte: maxPrice };
   }
@@ -23,13 +36,15 @@ const getProducts = async (req, res) => {
   if (category) {
     const categoryExists = await Category.findOne({ _id: category }).exec();
     if (!categoryExists) {
-      return res.status(400).json({ message: `Category with ID ${category} does not exist` });
+      return res
+        .status(400)
+        .json({ message: `Category with ID ${category} does not exist` });
     }
     filters.category = category;
   }
 
   if (name) {
-    filters.name = { $regex: name, $options: 'i' }; // Case insensitive regex search
+    filters.name = { $regex: name, $options: "i" }; // Case insensitive regex search
   }
 
   try {
@@ -39,8 +54,6 @@ const getProducts = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-
-//* GET PRODUCTS BY CATEGORY
 
 //* GET PRODUCTS BY CATEGORY
 const getProductsByCategory = async (req, res) => {
@@ -65,7 +78,6 @@ const getProductsByCategory = async (req, res) => {
 };
 
 //* CREATE PRODUCT
-//* CREATE PRODUCT
 const createProduct = async (req, res) => {
   try {
     const { name, description, price, stock, images, categoryID } = req.body;
@@ -79,22 +91,30 @@ const createProduct = async (req, res) => {
       return res.status(400).json({ message: "Product price is required" });
     }
     if (!images || images.length === 0) {
-      return res.status(400).json({ message: "At least one image is required" });
+      return res
+        .status(400)
+        .json({ message: "At least one image is required" });
     }
     if (!categoryID) {
       return res.status(400).json({ message: "categoryID is required" });
     }
 
     // Check if the category exists
-    const categoryExists = await Category.findOne({ _id: categoryID }).exec();
+    const categoryExists = await Category.findOne({
+      categoryID: categoryID,
+    }).exec();
     if (!categoryExists) {
-      return res.status(400).json({ message: `Category with ID ${categoryID} does not exist` });
+      return res
+        .status(400)
+        .json({ message: `Category with ID ${categoryID} does not exist` });
     }
 
     // Check if a product with the given name already exists
     const product = await Product.findOne({ name }).exec();
     if (product) {
-      return res.status(400).json({ message: `A Product with the given name: ${name} already exists` });
+      return res.status(400).json({
+        message: `A Product with the given name: ${name} already exists`,
+      });
     }
 
     // Create new product
@@ -104,8 +124,7 @@ const createProduct = async (req, res) => {
       price,
       stock,
       images,
-      category: categoryID,
-      category: categoryID,
+      categoryID: categoryID,
     });
     await newProduct.save();
     res.status(201).json(newProduct);
@@ -179,7 +198,13 @@ const deleteProduct = async (req, res) => {
   }
 };
 
-
 const buyProduct = async () => {};
-
-module.exports = { getProducts, getProductsByCategory, createProduct, buyProduct };
+module.exports = {
+  getAllProducts,
+  getProductsByFilter,
+  getProductsByCategory,
+  createProduct,
+  updateProduct,
+  deleteProduct,
+  buyProduct,
+};

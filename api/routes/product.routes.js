@@ -2,22 +2,20 @@ const express = require("express");
 
 const {
   createProduct,
-  getProducts,
-  getProductsByCategory,
+  getAllProducts,
+  getProductsByFilter,
+  deleteProduct,
+  updateProduct,
 } = require("../controllers/product.controller");
 
 const router = express.Router();
 
-router.get("/", getProducts);
+router.get("/", getAllProducts);
 // TODO: change URL
-router.get("/", getProductsByCategory);
+router.get("/getProductsByFilter", getProductsByFilter);
 router.post("/", createProduct);
 
-router.put("/:id", (req, res) => {
-  //TODO:
-});
-router.delete("/:id", (req, res) => {
-  //TODO:
-});
+router.put("/:id", updateProduct);
+router.delete("/:id", deleteProduct);
 
 module.exports = router;

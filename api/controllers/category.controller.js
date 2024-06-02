@@ -12,22 +12,27 @@ const createCategory = async (req, res) => {
     const { name, description } = req.body;
 
     const categoryExists = await Category.findOne({ name }).exec();
-    if (!categoryExists) {
+    if (categoryExists) {
       res.status(400).send(`A Category with the name: ${name} already exists`);
       return;
     }
     const categories = await Category.find();
 
+    const id = categories.reduce((acc, i) =>
+      i.categoryID > acc.categoryID ? i : acc
+    )?.categoryID;
+    console.log(id);
+
     const newCategory = new Category({
       name,
       description,
-      categoryID: categories.length + 1,
+      categoryID: id ? id + 1 : 1,
     });
-
+    console.log("NEW CATEGORY==>", newCategory);
     await newCategory.save();
     res.status(201).send(newCategory);
   } catch (error) {
-    res.status(500).send(err);
+    res.status(500).send(error);
   }
 };
 
