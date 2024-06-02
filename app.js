@@ -13,6 +13,10 @@ const { connectDB } = require("./api/config/db");
 app.use(express.json());
 app.use(cors());
 app.use(express.static("./public"));
+app.use("*.css", (req, res, next) => {
+  res.set("Content-Type", "text/css");
+  next();
+});
 
 const PORT = process.env.PORT || 8080;
 
@@ -21,7 +25,7 @@ app.get("/", (req, res) => {
 });
 
 const options = {
-  customCssUrl: "./public/styles/swagger-ui.css",
+  customCssUrl: "/styles/swagger-ui.css",
 };
 
 app.use("/api/swagger", swaggerUi.serve, swaggerUi.setup(swaggerDoc, options));
