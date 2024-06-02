@@ -4,27 +4,133 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="stylesheet.css">
-    <title>Silkyway</title>
+    <title>Webshop</title>
+    <link rel="stylesheet" href="styles/index.css">
 </head>
 
 <body>
-    <div class="header">
-        <h1>Silkyway</h1>
-        <a class="login" href=login.html target="_blank" rel="noopener noreferrer">Login</a>
-    </div>
-    <div class="imgs">
-        <img src="pics/bag2.jpg" alt="Bag">
-        <img src="pics/schoko.jpg" alt="Kinder Schokobons">
-        <img src="pics/nerf.jpg" alt="Nerf Gun">
-        <img src="pics/jeans.jpg" alt="Slim Fit Jeans">
-        <img src="pics/haribo2.jpg" alt="Haribo">
-    </div>
+    <nav class="navbar">
+        <img src="./pics/logo.jpg">
+        <ul>
+            <li><a href="#grid">Home</a></li>
+            <li><a href="#scroll">Scroll</a></li>
+            <li><a href="#filter">Filter</a></li>
+        </ul>
+    </nav>
 
+    <section id="grid" class="grid-section">
+        <div class="grid-container">
+            <button popovertarget="product_1">
+                <div class="grid-item grid-item-xl">
+                    <img src="./pics/product_1.jpg" alt="Item 1">
+                    <div class="overlay">Stalking Service</div>
+                </div>
+                <div id="product_1" class="product_popover" popover>product 1</div>
+            </button>
 
+            <button popovertarget="product_2">
+                <div class="grid-item grid-item-xl">
+                    <img src="./pics/product_2.jpg" alt="Item 2">
+                    <div class="overlay">Cookies deiner Freunde</div>
+                </div>
+                <div id="product_2" class="product_popover" popover>product 2</div>
 
-    </div>
-    <p>TEST TEST TEST</p>
+            </button>
+            <button popovertarget="product_3">
+                <div class="grid-item grid-item-xl">
+                    <img src="./pics/product_4.jpg" alt="Item 4">
+                    <div class="overlay">Spid-Diabetes</div>
+                </div>
+                <div id="product_3" class="product_popover" popover>product 3</div>
+
+            </button>
+            <button popovertarget="product_4">
+                <div class="grid-item grid-item-xl">
+                    <img src="./pics/product_3.jpg" alt="Item 3">
+                    <div class="overlay">Big Liz</div>
+                </div>
+                <div id="product_4" class="product_popover" popover>product 4</div>
+
+            </button>
+        </div>
+    </section>
+    <section id="scroll" class="horizontal-section">
+        <h2>Angebote</h2>
+        <div class="h-scroll-container">
+            <ul class="h-scroll-wrapper">
+                <li class="grid-item grid-item-m">
+                    <img src="./pics/product_1.jpg" alt="Item 1">
+                    <div class="overlay">Stalking Service</div>
+                </li>
+                <li class="grid-item grid-item-m">
+                    <img src="./pics/product_2.jpg" alt="Item 1">
+                    <div class="overlay">Cookies deiner Freunde</div>
+                </li>
+                <li class="grid-item grid-item-m">
+                    <img src="./pics/product_3.jpg" alt="Item 1">
+                    <div class="overlay">Big Liz</div>
+                </li>
+                <li class="grid-item grid-item-m">
+                    <img src="./pics/product_4.jpg" alt="Item 1">
+                    <div class="overlay">Spid-Diabetes</div>
+                </li>
+                <li class="grid-item grid-item-m">
+                    <img src="./pics/product_5.jpg" alt="Item 1">
+                    <div class="overlay">Pillen Roulett</div>
+                </li>
+                <li class="grid-item grid-item-m">
+                    <img src="./pics/product_6.jpg" alt="Item 1">
+                    <div class="overlay">Toby</div>
+                </li>
+            </ul>
+        </div>
+        </div>
+    </section>
+
+    <section id="filter" class="flex-section">
+        <ul class="filter-container">
+            <li class="active" onclick="filter(this, 'all')">Alle Kategorien</li>
+            <li onclick="filter(this, 'cat1')">Hacking</li>
+            <li onclick="filter(this, 'cat2')">Lebensmittel</li>
+            <li onclick="filter(this, 'cat3')">Kunst</li>
+            <li onclick="filter(this, 'cat4')">Misc</li>
+        </ul>
+        <div class="grid-container filter-container-items">
+            <div class="grid-item grid-item-l cat1">
+                <img src="./pics/product_1.jpg" alt="Item 1">
+                <div class="overlay">Stalking Service</div>
+            </div>
+            <div class="grid-item grid-item-l cat1">
+                <img src="./pics/product_2.jpg" alt="Item 2">
+                <div class="overlay">Cookies deiner Freunde</div>
+            </div>
+            <div class="grid-item grid-item-l cat3">
+                <img src="./pics/product_3.jpg" alt="Item 3">
+                <div class="overlay">Big Liz</div>
+            </div>
+            <div class="grid-item grid-item-l cat2">
+                <img src="./pics/product_4.jpg" alt="Item 4">
+                <div class="overlay">Spid-Diabetes</div>
+            </div>
+            <div class="grid-item grid-item-l cat2">
+                <img src="./pics/product_5.jpg" alt="Item 5">
+                <div class="overlay">Pillen Roulett</div>
+            </div>
+            <div class="grid-item grid-item-l cat4">
+                <img src="./pics/product_6.jpg" alt="Item 6">
+                <div class="overlay">Toby</div>
+            </div>
+            <div class="grid-item grid-item-l cat4">
+                <img src="./pics/product_7.jpg" alt="Item 7">
+                <div class="overlay">Steve</div>
+            </div>
+            <div class="grid-item grid-item-l cat2 cat4 cat1">
+                <img src="./ressources/300.jpg" alt="Item 8">
+                <div class="overlay">&nbsp;</div>
+            </div>
+        </div>
+    </section>
 </body>
+<script defer src="scripts/index.js"></script>
 
 </html>
