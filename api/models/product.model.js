@@ -17,7 +17,7 @@ const ProductModel = new Schema(
       type: Number,
       // required: true,
     },
-    category: {
+    categoryID: {
       type: Number,
     },
 
@@ -37,6 +37,6 @@ const ProductModel = new Schema(
       type: Date,
     },
   },
-  { collection: "product" }
+  { collection: "products" }
 );
 module.exports = model("Product", ProductModel);

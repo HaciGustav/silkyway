@@ -22,6 +22,6 @@ const CategoryModel = new Schema(
       type: Date,
     },
   },
-  { collection: "category" }
+  { collection: "categories" }
 );
 module.exports = model("Category", CategoryModel);
