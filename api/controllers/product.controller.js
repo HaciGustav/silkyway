@@ -218,7 +218,7 @@ const buyProduct = async (req, res) => {
 module.exports = {
   getAllProducts,
   getProductsByFilter,
-  getProductsByCategory,
+  // getProductsByCategory,
   getProductById,
   createProduct,
   updateProduct,
