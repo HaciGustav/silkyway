@@ -22,9 +22,9 @@ const getProductById = async (req, res) => {
 };
 //* GET filtered products
 const getProductsByFilter = async (req, res) => {
-  const { priceRange, category, name } = req.query;
+  const { priceRange, categoryID, name, tag, id } = req.query;
 
-  if (!priceRange && !category && !name) {
+  if (!priceRange && !categoryID && !name && !tag && !id) {
     return res
       .status(400)
       .json({ message: "At least one filter parameter must be provided" });
@@ -43,24 +43,32 @@ const getProductsByFilter = async (req, res) => {
     filters.price = { $gte: minPrice, $lte: maxPrice };
   }
 
-  if (category) {
-    const categoryExists = await Category.findOne({ _id: category }).exec();
+  if (categoryID) {
+    const categoryExists = await Category.findOne({ categoryID }).exec();
     if (!categoryExists) {
       return res
         .status(400)
-        .json({ message: `Category with ID ${category} does not exist` });
+        .json({ message: `Category with ID ${categoryID} does not exist` });
     }
-    filters.category = category;
+    filters.categoryID = categoryID;
   }
 
   if (name) {
     filters.name = { $regex: name, $options: "i" }; // Case insensitive regex search
+  }
+  if (id) {
+    filters.id = id;
+  }
+
+  if (tag) {
+    filters.tags = { $in: [tag] };
   }
 
   try {
     const data = await Product.find(filters);
     res.json(data);
   } catch (error) {
+    console.log(error);
     res.status(500).json({ message: error.message });
   }
 };
@@ -83,7 +91,8 @@ const getProductsByCategory = async (req, res) => {
 //* CREATE PRODUCT
 const createProduct = async (req, res) => {
   try {
-    const { name, description, price, stock, images, categoryID } = req.body;
+    const { name, description, price, stock, images, categoryID, tags } =
+      req.body;
 
     // Check if a product with the given name already exists
     // Check if required fields are present
@@ -124,11 +133,13 @@ const createProduct = async (req, res) => {
     const newProduct = new Product({
       name,
       description,
+      tags,
       price,
       stock,
       images,
       categoryID: categoryID,
     });
+    newProduct.id = newProduct._id;
     await newProduct.save();
     res.status(201).json(newProduct);
   } catch (error) {
@@ -180,7 +191,7 @@ const updateProduct = async (req, res) => {
 const deleteProduct = async (req, res) => {
   try {
     const { id } = req.params;
-
+    console.log(id);
     // Check if the product ID is provided
     if (!id) {
       return res.status(400).send("Product ID is required");
@@ -193,7 +204,7 @@ const deleteProduct = async (req, res) => {
     }
 
     // Delete the product
-    await product.remove();
+    await product.deleteOne();
     res.status(200).send({ message: "Product deleted successfully" });
   } catch (error) {
     console.log(error);
@@ -201,7 +212,9 @@ const deleteProduct = async (req, res) => {
   }
 };
 
-const buyProduct = async () => {};
+const buyProduct = async (req, res) => {
+  //TODO: Implement a function that checks if the product.stock >= 1
+};
 module.exports = {
   getAllProducts,
   getProductsByFilter,

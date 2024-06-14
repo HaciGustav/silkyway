@@ -28,7 +28,6 @@ const createCategory = async (req, res) => {
       description,
       categoryID: id ? id + 1 : 1,
     });
-    console.log("NEW CATEGORY==>", newCategory);
     await newCategory.save();
     res.status(201).send(newCategory);
   } catch (error) {

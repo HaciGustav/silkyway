@@ -1,8 +1,11 @@
-const { Double } = require("mongodb");
 const { Schema, model, Types } = require("mongoose");
 
 const ProductModel = new Schema(
   {
+    id: {
+      type: String,
+      required: true,
+    },
     name: {
       type: String,
       required: true,
@@ -23,6 +26,9 @@ const ProductModel = new Schema(
 
     stock: {
       type: Number,
+    },
+    tags: {
+      type: Array,
     },
     images: [
       {

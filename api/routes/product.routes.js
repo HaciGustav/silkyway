@@ -13,7 +13,7 @@ const { sendPurchaseMail } = require("../utils/email");
 const router = express.Router();
 
 router.get("/", getAllProducts);
-router.get("/:id", getProductById);
+// router.get("/:id", getProductById);
 router.get("/getProductsByFilter", getProductsByFilter);
 router.post("/", createProduct);
 router.post("/email", (req, res) => {

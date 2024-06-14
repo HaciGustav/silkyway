@@ -116,6 +116,16 @@
             }
           },
           {
+            "name": "tag",
+            "in": "query",
+            "description": "A relevant Tag",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "Jewellery"
+            }
+          },
+          {
             "name": "categoryID",
             "in": "query",
             "description": "Category filter",
@@ -530,6 +540,12 @@
           "categoryID": {
             "type": "number",
             "example": 1
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           },
           "stock": {
             "type": "number",
