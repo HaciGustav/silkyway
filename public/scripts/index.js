@@ -27,3 +27,39 @@ function filter(elmnt, category){
         else{ item.classList.remove('hidden'); }
     });
 }
+    async function addCredits(userId, credits) {
+        try {
+            const response = await fetch('http://localhost:8080/api/users/add-credits', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ userId, credits }),
+            });
+            const data = await response.json();
+            console.log(data); // Handle response as needed
+            // Optionally update UI or show a message indicating success/failure
+        } catch (error) {
+            console.error('Error adding credits:', error);
+            // Handle error scenario, show error message to user, etc.
+        }
+    }
+    
+    // Function to purchase product with credits
+    async function purchaseProduct(userId, productId) {
+        try {
+            const response = await fetch('http://localhost:8080/api/users/purchase-product', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ userId, productId }),
+            });
+            const data = await response.json();
+            console.log(data); // Handle response as needed
+            // Optionally update UI or show a message indicating success/failure
+        } catch (error) {
+            console.error('Error purchasing product:', error);
+            // Handle error scenario, show error message to user, etc.
+        }
+    }
