@@ -6,9 +6,7 @@
   "scripts": {
     "start": "node app.js",
     "start:watch": "nodemon app.js",
-    "scss:build": "sass --watch scss/index.scss:public/css/style.css",
-    "scss:watch": "sass --watch scss:public/styles",
-    "dev": "npm run scss:watch server:watch",
+    "dev": "npm run start:watch",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
