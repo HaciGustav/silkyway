@@ -41,9 +41,7 @@
   "paths": {
     "/api/products": {
       "get": {
-        "tags": [
-          "Products"
-        ],
+        "tags": ["Products"],
         "summary": "Get list of products",
         "responses": {
           "200": {
@@ -68,9 +66,7 @@
         }
       },
       "post": {
-        "tags": [
-          "Products"
-        ],
+        "tags": ["Products"],
         "summary": "Create a new product",
         "requestBody": {
           "content": {
@@ -104,9 +100,7 @@
     },
     "/api/products/getProductsByFilter": {
       "get": {
-        "tags": [
-          "Products"
-        ],
+        "tags": ["Products"],
         "summary": "Get list of products by given parameters",
         "parameters": [
           {
@@ -178,9 +172,7 @@
     },
     "/api/products/{id}": {
       "get": {
-        "tags": [
-          "Products"
-        ],
+        "tags": ["Products"],
         "summary": "Get a product by ID",
         "parameters": [
           {
@@ -213,9 +205,7 @@
         }
       },
       "put": {
-        "tags": [
-          "Products"
-        ],
+        "tags": ["Products"],
         "summary": "Update a product by ID",
         "parameters": [
           {
@@ -258,9 +248,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "Products"
-        ],
+        "tags": ["Products"],
         "summary": "Delete a product by ID",
         "parameters": [
           {
@@ -288,9 +276,7 @@
     },
     "/api/categories": {
       "get": {
-        "tags": [
-          "Categories"
-        ],
+        "tags": ["Categories"],
         "summary": "Get list of categories",
         "responses": {
           "200": {
@@ -315,9 +301,7 @@
         }
       },
       "post": {
-        "tags": [
-          "Categories"
-        ],
+        "tags": ["Categories"],
         "summary": "Create a new category",
         "requestBody": {
           "content": {
@@ -351,9 +335,7 @@
     },
     "/api/users": {
       "get": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Authentication"],
         "summary": "Get list of users",
         "responses": {
           "200": {
@@ -378,9 +360,7 @@
         }
       },
       "post": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "summary": "Create a new user",
         "requestBody": {
           "content": {
@@ -414,9 +394,7 @@
     },
     "api/auth/login": {
       "post": {
-        "tags": [
-          "Authentication"
-        ],
+        "tags": ["Authentication"],
         "summary": "Login an existing user",
         "requestBody": {
           "required": true,
@@ -435,10 +413,7 @@
                     "example": "password123"
                   }
                 },
-                "required": [
-                  "email",
-                  "password"
-                ]
+                "required": ["email", "password"]
               }
             }
           }
@@ -476,9 +451,7 @@
     },
     "api/auth/register": {
       "post": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "summary": "Register a new user",
         "requestBody": {
           "required": true,
@@ -512,9 +485,7 @@
     },
     "/api/users/{id}": {
       "get": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "summary": "Get a user by ID",
         "parameters": [
           {
@@ -554,9 +525,7 @@
         }
       },
       "put": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "summary": "Update a user by ID",
         "parameters": [
           {
@@ -580,9 +549,7 @@
                     "example": "John Smith"
                   }
                 },
-                "required": [
-                  "name"
-                ]
+                "required": ["name"]
               }
             }
           }
@@ -614,9 +581,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "summary": "Delete a user by ID",
         "parameters": [
           {
