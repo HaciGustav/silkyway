@@ -1,12 +1,12 @@
 const Category = require("../models/category.model");
 
-//* GET ALL USERS
+//* GET ALL CATEGORIES
 const getCategories = async (req, res) => {
   const data = await Category.find();
   res.json(data);
 };
 
-//*CREATE Category
+//*CREATE CATEGORY
 const createCategory = async (req, res) => {
   try {
     const { name, description } = req.body;
