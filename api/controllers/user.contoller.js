@@ -2,7 +2,7 @@ const User = require("../models/user.model");
 const Product = require("../models/product.model");
 const express = require("express");
 const router = express.Router();
-const  jwt = require ("jsonwebtoken");
+const jwt = require("jsonwebtoken");
 
 const getUsers = async (req, res) => {
   try {
@@ -27,8 +27,10 @@ const createUser = async (req, res) => {
     const newUser = new User({ name, email, password });
     await newUser.save();
 
-    const token = jwt.sign({id: this.lastID}, "your_secret_key", { expiresIn: 100000000,});
-    res.status(201).send(newUser,  token);
+    const token = jwt.sign({ id: this.lastID }, "your_secret_key", {
+      expiresIn: 100000000,
+    });
+    res.status(201).send(newUser, token);
   } catch (error) {
     res.status(500).send(err);
   }
@@ -36,28 +38,28 @@ const createUser = async (req, res) => {
 //*LOGIN USER
 const loginUser = async (req, res) => {
   try {
-      const { email, password } = req.body;
+    const { email, password } = req.body;
 
-      const user = await User.findOne({ email }).exec();
-      if (!user) {
-          res.status(404).send('User not found');
-          return;
-      }
+    const user = await User.findOne({ email }).exec();
+    if (!user) {
+      res.status(404).send("User not found");
+      return;
+    }
 
-      const isPasswordValid = await bcrypt.compare(password, user.password);
-      if (!isPasswordValid) {
-          res.status(401).send('Invalid password');
-          return;
-      }
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      res.status(401).send("Invalid password");
+      return;
+    }
 
-      const token = jwt.sign({id: this.lastID}, "your_secret_key", { expiresIn: 100000000,});
-      res.status(200).send({ user, token });
+    const token = jwt.sign({ id: this.lastID }, "your_secret_key", {
+      expiresIn: 100000000,
+    });
+    res.status(200).send({ user, token });
   } catch (error) {
-      res.status(500).send(error);
+    res.status(500).send(error);
   }
 };
-
-
 
 // Function to add credits to a user's account
 const addCredits = async (req, res) => {
@@ -71,12 +73,13 @@ const addCredits = async (req, res) => {
 
     user.credits += credits;
     await user.save();
-    res.status(200).json({ message: "Silky Dinar purchased successfully", user });
+    res
+      .status(200)
+      .json({ message: "Silky Dinar purchased successfully", user });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
-
 
 // Function to purchase a product using credits
 const purchaseProductWithCredits = async (req, res) => {
@@ -85,7 +88,7 @@ const purchaseProductWithCredits = async (req, res) => {
     const user = await User.findById(userId);
     const product = await Product.findById(productId);
     const productID = req.body.productID;
-      
+
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
@@ -106,12 +109,11 @@ const purchaseProductWithCredits = async (req, res) => {
   }
 };
 
-module.exports = { 
-
+module.exports = {
   getUsers,
   createUser,
+  addCredits,
   loginUser,
-  addCredits, 
+  addCredits,
   purchaseProductWithCredits,
-
 };
