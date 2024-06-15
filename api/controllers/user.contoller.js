@@ -31,7 +31,9 @@ const addCredits = async (req, res) => {
 
     user.credits += credits;
     await user.save();
-    res.status(200).json({ message: "Silky Dinar purchased successfully", user });
+    res
+      .status(200)
+      .json({ message: "Silky Dinar purchased successfully", user });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -44,13 +46,7 @@ const purchaseProductWithCredits = async (req, res) => {
     const user = await User.findById(userId);
     const product = await Product.findById(productId);
     const productID = req.body.productID;
-    
-        const data = await Product.find({ _id: productID });
-        res.json(data);
-      } catch (error) {
-        res.status(500).json({ message: error.message });
-      }
-    
+
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
@@ -71,10 +67,9 @@ const purchaseProductWithCredits = async (req, res) => {
   }
 };
 
-module.exports = { 
+module.exports = {
   getUsers,
   createUser,
-  addCredits, 
+  addCredits,
   purchaseProductWithCredits,
-
 };
