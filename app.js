@@ -1,14 +1,32 @@
 const express = require("express");
 const app = express();
 const cors = require("cors");
-// SWAGGER
+
+const router = express.Router();
+
+// SWAGGER IMPORTS
 const swaggerUi = require("swagger-ui-express");
 const swaggerDoc = require("./swagger.json");
 
-const userRoute = require("./api/routes/user.routes");
-const productRoute = require("./api/routes/product.routes");
-const categoryRoute = require("./api/routes/category.routes");
 const { connectDB } = require("./api/config/db");
+const { createUser, loginUser } = require("./api/controllers/auth.controller");
+const {
+  getCategories,
+  createCategory,
+} = require("./api/controllers/category.controller");
+const {
+  getAllProducts,
+  getProductsByFilter,
+  createProduct,
+  updateProduct,
+  deleteProduct,
+} = require("./api/controllers/product.controller");
+const { sendPurchaseMail } = require("./api/utils/email");
+const {
+  addCredits,
+  getUsers,
+  purchaseProductWithCredits,
+} = require("./api/controllers/user.contoller");
 
 app.use(express.json());
 app.use(cors());
@@ -28,11 +46,64 @@ const options = {
   customCssUrl: "/styles/swagger-ui.css",
 };
 
-app.use("/api/swagger", swaggerUi.serve, swaggerUi.setup(swaggerDoc, options));
+//SWAGGER
+app.use("/swagger", swaggerUi.serve, swaggerUi.setup(swaggerDoc, options));
 
-app.use("/api/users", userRoute);
-app.use("/api/products", productRoute);
-app.use("/api/categories", categoryRoute);
+//
+//
+//
+//*AUTH
+router.post("/auth/register", createUser);
+router.post("/auth/login", loginUser);
+
+//
+//
+//
+//*USER
+router.get("/users", getUsers);
+
+router.put("/users/:id", (req, res) => {
+  //TODO:
+});
+router.delete("/users/:id", (req, res) => {
+  //TODO:
+});
+// Add credits to a user
+router.post("/users/add-credits", addCredits);
+
+//
+//
+//
+//*PRODUCT
+router.get("/products", getAllProducts);
+router.get("/products/getProductsByFilter", getProductsByFilter);
+
+router.post("/products/purchase-product", purchaseProductWithCredits);
+router.post("/products", createProduct);
+router.post("/products/email", (req, res) => {
+  sendPurchaseMail();
+  res.status(200).send("");
+});
+
+router.put("/products/:id", updateProduct);
+router.delete("/products/:id", deleteProduct);
+
+//
+//
+//
+//*CATEGORIES
+router.get("/categories", getCategories);
+
+router.post("/categories", createCategory);
+
+router.put("/categories/:id", (req, res) => {
+  //TODO:
+});
+router.delete("/categories/:id", (req, res) => {
+  //TODO:
+});
+
+app.use("/api", router);
 
 connectDB();
 
