@@ -41,9 +41,10 @@
   "paths": {
     "/api/products": {
       "get": {
-        "tags": ["Products"],
+        "tags": [
+          "Products"
+        ],
         "summary": "Get list of products",
-
         "responses": {
           "200": {
             "description": "A list of products",
@@ -67,7 +68,9 @@
         }
       },
       "post": {
-        "tags": ["Products"],
+        "tags": [
+          "Products"
+        ],
         "summary": "Create a new product",
         "requestBody": {
           "content": {
@@ -99,10 +102,11 @@
         }
       }
     },
-
     "/api/products/getProductsByFilter": {
       "get": {
-        "tags": ["Products"],
+        "tags": [
+          "Products"
+        ],
         "summary": "Get list of products by given parameters",
         "parameters": [
           {
@@ -174,7 +178,9 @@
     },
     "/api/products/{id}": {
       "get": {
-        "tags": ["Products"],
+        "tags": [
+          "Products"
+        ],
         "summary": "Get a product by ID",
         "parameters": [
           {
@@ -207,7 +213,9 @@
         }
       },
       "put": {
-        "tags": ["Products"],
+        "tags": [
+          "Products"
+        ],
         "summary": "Update a product by ID",
         "parameters": [
           {
@@ -250,7 +258,9 @@
         }
       },
       "delete": {
-        "tags": ["Products"],
+        "tags": [
+          "Products"
+        ],
         "summary": "Delete a product by ID",
         "parameters": [
           {
@@ -278,7 +288,9 @@
     },
     "/api/categories": {
       "get": {
-        "tags": ["Categories"],
+        "tags": [
+          "Categories"
+        ],
         "summary": "Get list of categories",
         "responses": {
           "200": {
@@ -303,7 +315,9 @@
         }
       },
       "post": {
-        "tags": ["Categories"],
+        "tags": [
+          "Categories"
+        ],
         "summary": "Create a new category",
         "requestBody": {
           "content": {
@@ -337,7 +351,9 @@
     },
     "/api/users": {
       "get": {
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
         "summary": "Get list of users",
         "responses": {
           "200": {
@@ -362,7 +378,9 @@
         }
       },
       "post": {
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
         "summary": "Create a new user",
         "requestBody": {
           "content": {
@@ -394,9 +412,109 @@
         }
       }
     },
+    "api/auth/login": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Login an existing user",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "user@example.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "password123"
+                  }
+                },
+                "required": [
+                  "email",
+                  "password"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User successfully logged in",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "user": {
+                      "$ref": "#/components/schemas/User"
+                    },
+                    "token": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - Invalid email/password"
+          },
+          "401": {
+            "description": "Unauthorized - Incorrect email/password"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "api/auth/register": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Register a new user",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserRegister"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User successfully registered",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserRegister"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - Email address already in use or invalid data format"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
     "/api/users/{id}": {
       "get": {
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
         "summary": "Get a user by ID",
         "parameters": [
           {
@@ -436,7 +554,9 @@
         }
       },
       "put": {
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
         "summary": "Update a user by ID",
         "parameters": [
           {
@@ -460,7 +580,9 @@
                     "example": "John Smith"
                   }
                 },
-                "required": ["name"]
+                "required": [
+                  "name"
+                ]
               }
             }
           }
@@ -492,7 +614,9 @@
         }
       },
       "delete": {
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
         "summary": "Delete a user by ID",
         "parameters": [
           {
@@ -516,7 +640,6 @@
       }
     }
   },
-
   "components": {
     "schemas": {
       "Product": {
@@ -629,6 +752,41 @@
             "required": true,
             "minlength": 6,
             "example": "password123"
+          }
+        }
+      },
+      "UserRegister": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "required": true,
+            "unique": true,
+            "example": "user@example.com"
+          },
+          "password": {
+            "type": "string",
+            "required": true,
+            "minlength": 6,
+            "example": "password123"
+          },
+          "firstname": {
+            "type": "string",
+            "required": true,
+            "trim": true,
+            "example": "John"
+          },
+          "lastname": {
+            "type": "string",
+            "required": true,
+            "trim": true,
+            "example": "Doe"
+          },
+          "address": {
+            "type": "string",
+            "required": true,
+            "trim": true,
+            "example": "example@hotmail.com"
           }
         }
       }
