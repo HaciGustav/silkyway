@@ -18,6 +18,10 @@ const UserModel = new Schema(
       required: true,
       minlength: 6,
     },
+    credits: {
+      type: Number,
+      default: 0,
+    },
   },
   { collection: "users" }
 );

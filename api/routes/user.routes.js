@@ -1,5 +1,5 @@
 const express = require("express");
-const { getUsers, createUser } = require("../controllers/user.contoller");
+const { getUsers, createUser, addCredits, purchaseProductWithCredits } = require("../controllers/user.contoller");
 
 const router = express.Router();
 
@@ -12,5 +12,10 @@ router.put("/:id", (req, res) => {
 router.delete("/:id", (req, res) => {
   //TODO:
 });
+// Add credits to a user
+router.post('/add-credits', addCredits);
+
+// Purchase product with credits
+router.post('/purchase-product', purchaseProductWithCredits);
 
 module.exports = router;
