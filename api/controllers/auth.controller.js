@@ -2,7 +2,7 @@ const User = require("../models/user.model");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
-//*CREATE USER
+// Create User
 const createUser = async (req, res) => {
   try {
     const { email, password, firstname, lastname, address } = req.body;
@@ -24,18 +24,21 @@ const createUser = async (req, res) => {
     newUser.id = newUser._id;
     await newUser.save();
 
-    const token = jwt.sign({ id: this.lastID }, "your_secret_key", {
+    const token = jwt.sign({ id: newUser.id, email: newUser.email }, "your_secret_key", {
       expiresIn: 100000000,
     });
 
-    res.status(201).json({ user: newUser, token });
+    res
+      .status(201)
+      .cookie("token", token, { httpOnly: true, secure: true }) // Set token in cookie
+      .json({ user: newUser });
   } catch (error) {
     console.log(error);
     res.status(500).send(error);
   }
 };
 
-//*LOGIN USER
+// Login User
 const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -52,17 +55,44 @@ const loginUser = async (req, res) => {
       return;
     }
 
-    const token = jwt.sign({ id: this.lastID }, "your_secret_key", {
+    const token = jwt.sign({ id: user.id, email: user.email }, "your_secret_key", {
       expiresIn: 100000000,
     });
-    res.status(200).send({ user, token });
+
+    res
+      .status(200)
+      .cookie("token", token, { httpOnly: true, secure: true }) // Set token in cookie
+      .send({ user });
   } catch (error) {
     console.log(error);
     res.status(500).send(error);
   }
 };
 
+// Middleware to authenticate JWT from cookies
+const authenticateJWT = (req, res, next) => {
+  const token = req.cookies.token;
+  if (!token) {
+    return res.status(401).send("Access denied. No token provided.");
+  }
+
+  try {
+    const decoded = jwt.verify(token, "your_secret_key");
+    req.user = decoded;
+    next();
+  } catch (error) {
+    res.status(400).send("Invalid token.");
+  }
+};
+
+// Logout User
+const logoutUser = (req, res) => {
+  res.clearCookie("token").send("Logged out successfully");
+};
+
 module.exports = {
   loginUser,
   createUser,
+  authenticateJWT,
+  logoutUser,
 };

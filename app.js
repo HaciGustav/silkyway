@@ -1,15 +1,20 @@
 const express = require("express");
 const app = express();
 const cors = require("cors");
-
+//IMPORTS FOR SESSION TRACKING
+const cookieParser = require("cookie-parser");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 const router = express.Router();
-
 // SWAGGER IMPORTS
 const swaggerUi = require("swagger-ui-express");
 const swaggerDoc = require("./swagger.json");
 
 const { connectDB } = require("./api/config/db");
-const { createUser, loginUser } = require("./api/controllers/auth.controller");
+const {User} = require("./api/models/user.model");
+
+//CONTROLLERS
+const { createUser, loginUser, logoutUser, authenticateJWT } = require("./api/controllers/auth.controller");
 const {
   getCategories,
   createCategory,
@@ -27,7 +32,7 @@ const {
   getUsers,
   purchaseProductWithCredits,
 } = require("./api/controllers/user.contoller");
-
+app.use(cookieParser())
 app.use(express.json());
 app.use(cors());
 app.use(express.static("./public"));
@@ -53,9 +58,10 @@ app.use("/swagger", swaggerUi.serve, swaggerUi.setup(swaggerDoc, options));
 //
 //
 //*AUTH
-router.post("/auth/register", createUser);
-router.post("/auth/login", loginUser);
-
+app.post("/api/auth/register", createUser);
+app.post("/api/auth/login", loginUser);
+app.post("/api/auth/logout", logoutUser);
+app.use(authenticateJWT);
 //
 //
 //
@@ -69,25 +75,21 @@ router.delete("/users/:id", (req, res) => {
   //TODO:
 });
 // Add credits to a user
-router.post("/users/add-credits", addCredits);
-
+app.post("/api/users/add-credits", addCredits);
 //
 //
 //
 //*PRODUCT
 router.get("/products", getAllProducts);
 router.get("/products/getProductsByFilter", getProductsByFilter);
-
 router.post("/products/purchase-product", purchaseProductWithCredits);
 router.post("/products", createProduct);
+app.put("/api/products/:id", updateProduct);
+app.delete("/api/products/:id", deleteProduct);
 router.post("/products/email", (req, res) => {
   sendPurchaseMail();
   res.status(200).send("");
 });
-
-router.put("/products/:id", updateProduct);
-router.delete("/products/:id", deleteProduct);
-
 //
 //
 //
