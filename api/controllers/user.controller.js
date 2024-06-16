@@ -17,6 +17,8 @@ const addCredits = async (req, res) => {
     const { userId, credits } = req.body;
     const adminUser = req.user; // Assuming `req.user` contains the current logged-in user
 
+    console.log('Admin user:', adminUser); // Debugging statement
+
     if (!adminUser || !adminUser.isAdmin) {
       return res.status(403).json({ message: "Forbidden: Admin rights required" });
     }
@@ -26,13 +28,12 @@ const addCredits = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    user.credits += parseInt(credits); // Ensure credits are parsed as an integer
+    user.credits += parseInt(credits, 10); // Ensure credits are parsed as an integer
     await user.save();
     res.status(200).json({ message: "Credits added successfully", user });
   } catch (error) {
     res.status(500).json({ message: error.message });
-  }
-};
+  }};
 
 // Purchase Product with Credits
 const purchaseProductWithCredits = async (req, res) => {

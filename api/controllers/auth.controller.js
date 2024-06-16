@@ -66,13 +66,20 @@ const authenticateToken = async (req, res, next) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
 
-  if (!token) return res.sendStatus(401); // No token, unauthorized
+  if (!token) {
+    console.log('No token provided'); // Debugging statement
+    return res.sendStatus(401); // No token, unauthorized
+  }
 
   try {
+    console.log('Token:', token); // Debugging statement
     const decoded = jwt.verify(token, 'your_secret_key');
+    console.log('Decoded token:', decoded); // Debugging statement
     req.user = await User.findById(decoded.id); // Attach user to request
+    console.log('Authenticated user:', req.user); // Debugging statement
     next();
   } catch (error) {
+    console.log('Token verification failed:', error.message); // Debugging statement
     res.sendStatus(403); // Invalid token, forbidden
   }
 };

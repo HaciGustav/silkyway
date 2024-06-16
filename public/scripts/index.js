@@ -27,24 +27,25 @@ function filter(elmnt, category){
         else{ item.classList.remove('hidden'); }
     });
 }
-    async function addCredits(userId, credits) {
-        try {
-            const response = await fetch('http://localhost:8080/api/users/add-credits', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ userId, credits }),
-            });
-            const data = await response.json();
-            console.log(data); // Handle response as needed
-            // Optionally update UI or show a message indicating success/failure
-        } catch (error) {
-            console.error('Error adding credits:', error);
-            // Handle error scenario, show error message to user, etc.
-        }
+async function addCredits(userId, credits) {
+    try {
+      const token = localStorage.getItem('token'); // Retrieve token from local storage or wherever it's stored
+      const response = await fetch('http://localhost:8080/api/users/add-credits', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`, // Include token in request
+        },
+        body: JSON.stringify({ userId, credits }),
+      });
+      const data = await response.json();
+      console.log(data); // Handle response as needed
+      // Optionally update UI or show a message indicating success/failure
+    } catch (error) {
+      console.error('Error adding credits:', error);
+      // Handle error scenario, show error message to user, etc.
     }
-    
+  }
     // Function to purchase product with credits
     async function purchaseProduct(userId, productId) {
         try {

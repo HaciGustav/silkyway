@@ -36,7 +36,7 @@ app.use("*.css", (req, res, next) => {
   res.set("Content-Type", "text/css");
   next();
 });
-
+app.use("/api/users/add-credits", authenticateToken);
 const PORT = process.env.PORT || 8080;
 
 app.get("/", (req, res) => {
