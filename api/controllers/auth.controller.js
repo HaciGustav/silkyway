@@ -24,14 +24,11 @@ const createUser = async (req, res) => {
     newUser.id = newUser._id;
     await newUser.save();
 
-    const token = jwt.sign({ id: newUser.id, email: newUser.email }, "your_secret_key", {
+    const token = jwt.sign({ id: newUser._id }, "your_secret_key", {
       expiresIn: 100000000,
     });
 
-    res
-      .status(201)
-      .cookie("token", token, { httpOnly: true, secure: true }) // Set token in cookie
-      .json({ user: newUser });
+    res.status(201).json({ user: newUser, token });
   } catch (error) {
     console.log(error);
     res.status(500).send(error);
@@ -55,44 +52,36 @@ const loginUser = async (req, res) => {
       return;
     }
 
-    const token = jwt.sign({ id: user.id, email: user.email }, "your_secret_key", {
+    const token = jwt.sign({ id: user._id }, "your_secret_key", {
       expiresIn: 100000000,
     });
-
-    res
-      .status(200)
-      .cookie("token", token, { httpOnly: true, secure: true }) // Set token in cookie
-      .send({ user });
+    res.status(200).json({ user, token });
   } catch (error) {
     console.log(error);
     res.status(500).send(error);
   }
 };
+//MIDDELWARE 
+const authenticateToken = async (req, res, next) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
 
-// Middleware to authenticate JWT from cookies
-const authenticateJWT = (req, res, next) => {
-  const token = req.cookies.token;
-  if (!token) {
-    return res.status(401).send("Access denied. No token provided.");
-  }
+  if (!token) return res.sendStatus(401); // No token, unauthorized
 
   try {
-    const decoded = jwt.verify(token, "your_secret_key");
-    req.user = decoded;
+    const decoded = jwt.verify(token, 'your_secret_key');
+    req.user = await User.findById(decoded.id); // Attach user to request
     next();
   } catch (error) {
-    res.status(400).send("Invalid token.");
+    res.sendStatus(403); // Invalid token, forbidden
   }
 };
 
-// Logout User
-const logoutUser = (req, res) => {
-  res.clearCookie("token").send("Logged out successfully");
-};
+module.exports = authenticateToken;
+
 
 module.exports = {
-  loginUser,
   createUser,
-  authenticateJWT,
-  logoutUser,
+  loginUser,
+  authenticateToken,
 };

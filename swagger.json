@@ -392,87 +392,309 @@
         }
       }
     },
-    "/api/auth/register": {
+    "api/auth/login": {
       "post": {
         "tags": ["Authentication"],
-        "summary": "Register a new user",
+        "summary": "Login an existing user",
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/User"
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "user@example.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "password123"
+                  }
+                },
+                "required": ["email", "password"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User successfully logged in",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "user": {
+                      "$ref": "#/components/schemas/User"
+                    },
+                    "token": {
+                      "type": "string"
+                    }
+                  }
+                }
               }
             }
           },
-          "required": true
+          "400": {
+            "description": "Bad request - Invalid email/password"
+          },
+          "401": {
+            "description": "Unauthorized - Incorrect email/password"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "api/auth/register": {
+      "post": {
+        "tags": ["Users"],
+        "summary": "Register a new user",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserRegister"
+              }
+            }
+          }
         },
         "responses": {
           "201": {
-            "description": "User registered",
+            "description": "User successfully registered",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/User"
+                  "$ref": "#/components/schemas/UserRegister"
                 }
               }
             }
           },
           "400": {
-            "description": "Bad request"
+            "description": "Bad request - Email address already in use or invalid data format"
           },
           "500": {
             "description": "Internal server error"
           }
         }
       }
-    },
-    "/api/auth/login": {
+    },"/user/add-credits": {
       "post": {
-        "tags": ["Authentication"],
-        "summary": "Login a user",
+        "tags": [
+          "User"
+        ],
+        "summary": "Add credits to a user",
+        "description": "Add credits to a user's account. Admin rights required.",
+        "operationId": "addCredits",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "User ID and credits to add",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "userId": {
+                  "type": "string"
+                },
+                "credits": {
+                  "type": "integer"
+                }
+              }
+            }
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "type": "string",
+            "description": "JWT token",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Credits added successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                },
+                "user": {
+                  "$ref": "#/definitions/User"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden: Admin rights required"
+          },
+          "404": {
+            "description": "User not found"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "User": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "firstname": {
+          "type": "string"
+        },
+        "lastname": {
+          "type": "string"
+        },
+        "address": {
+          "type": "string"
+        },
+        "credits": {
+          "type": "integer"
+        },
+        "isAdmin": {
+          "type": "boolean"
+        }
+      }
+    }
+  ,
+    "/api/users/{id}": {
+      "get": {
+        "tags": ["Users"],
+        "summary": "Get a user by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "example": 1
+                    },
+                    "name": {
+                      "type": "string",
+                      "example": "John Doe"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found"
+          }
+        }
+      },
+      "put": {
+        "tags": ["Users"],
+        "summary": "Update a user by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "example": 1
+          }
+        ],
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/LoginRequest"
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "John Smith"
+                  }
+                },
+                "required": ["name"]
               }
             }
-          },
-          "required": true
+          }
         },
         "responses": {
           "200": {
-            "description": "User logged in",
+            "description": "User updated",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LoginResponse"
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "example": 1
+                    },
+                    "name": {
+                      "type": "string",
+                      "example": "John Smith"
+                    }
+                  }
                 }
               }
             }
           },
-          "400": {
-            "description": "Bad request"
-          },
-          "500": {
-            "description": "Internal server error"
+          "404": {
+            "description": "User not found"
           }
         }
-      }
-    },
-    "/api/auth/logout": {
-      "post": {
-        "tags": ["Authentication"],
-        "summary": "Logout a user",
+      },
+      "delete": {
+        "tags": ["Users"],
+        "summary": "Delete a user by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "example": 1
+          }
+        ],
         "responses": {
-          "200": {
-            "description": "User logged out"
+          "204": {
+            "description": "User deleted"
           },
-          "400": {
-            "description": "Bad request"
-          },
-          "500": {
-            "description": "Internal server error"
+          "404": {
+            "description": "User not found"
           }
         }
       }
@@ -485,30 +707,58 @@
         "properties": {
           "name": {
             "type": "string",
+            "required": true,
+            "trim": true,
             "example": "Sample Product"
           },
           "description": {
             "type": "string",
-            "example": "This is a sample product"
+            "required": true,
+            "example": "This is a sample product description"
           },
           "price": {
             "type": "number",
-            "example": 29.99
+            "example": 19.99
           },
           "categoryID": {
-            "type": "string",
-            "example": "1"
+            "type": "number",
+            "example": 1
           },
           "tags": {
             "type": "array",
             "items": {
               "type": "string"
-            },
-            "example": ["Tag1", "Tag2"]
+            }
           },
-          "imageUrl": {
+          "stock": {
+            "type": "number",
+            "example": 100
+          },
+          "images": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "url": {
+                  "type": "string",
+                  "example": "http://example.com/image1.jpg"
+                },
+                "alt": {
+                  "type": "string",
+                  "example": "Image description"
+                }
+              }
+            }
+          },
+          "created_at": {
             "type": "string",
-            "example": "http://example.com/image.jpg"
+            "format": "date-time",
+            "example": "2023-06-01T00:00:00Z"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2023-06-01T00:00:00Z"
           }
         }
       },
@@ -517,65 +767,89 @@
         "properties": {
           "name": {
             "type": "string",
-            "example": "Sample Category"
+            "required": true,
+            "trim": true,
+            "example": "Electronics"
           },
           "description": {
             "type": "string",
-            "example": "This is a sample category"
+            "example": "Category description"
+          },
+          "categoryID": {
+            "type": "number",
+            "required": true,
+            "example": 1
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2023-06-01T00:00:00Z"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2023-06-01T00:00:00Z"
           }
         }
       },
       "User": {
         "type": "object",
         "properties": {
-          "username": {
-            "type": "string",
-            "example": "sampleuser"
-          },
           "email": {
             "type": "string",
+            "required": true,
+            "unique": true,
+            "example": "user@example.com"
+          },
+          "name": {
+            "type": "string",
+            "required": true,
+            "trim": true,
+            "example": "John Doe"
+          },
+          "password": {
+            "type": "string",
+            "required": true,
+            "minlength": 6,
+            "example": "password123"
+          }
+        }
+      },
+      "UserRegister": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "required": true,
+            "unique": true,
             "example": "user@example.com"
           },
           "password": {
             "type": "string",
+            "required": true,
+            "minlength": 6,
             "example": "password123"
-          }
-        }
-      },
-      "LoginRequest": {
-        "type": "object",
-        "properties": {
-          "username": {
-            "type": "string",
-            "example": "sampleuser"
           },
-          "password": {
+          "firstname": {
             "type": "string",
-            "example": "password123"
-          }
-        }
-      },
-      "LoginResponse": {
-        "type": "object",
-        "properties": {
-          "token": {
+            "required": true,
+            "trim": true,
+            "example": "John"
+          },
+          "lastname": {
             "type": "string",
-            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InNhbXBsZXVzZXIifQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+            "required": true,
+            "trim": true,
+            "example": "Doe"
+          },
+          "address": {
+            "type": "string",
+            "required": true,
+            "trim": true,
+            "example": "example@hotmail.com"
           }
         }
       }
-    },
-    "securitySchemes": {
-      "bearerAuth": {
-        "type": "http",
-        "scheme": "bearer",
-        "bearerFormat": "JWT"
-      }
     }
-  },
-  "security": [
-    {
-      "bearerAuth": []
-    }
-  ]
+  }
 }

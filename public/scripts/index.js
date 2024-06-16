@@ -63,3 +63,163 @@ function filter(elmnt, category){
             // Handle error scenario, show error message to user, etc.
         }
     }
+async function register(event) {
+        event.preventDefault();
+        const email = document.getElementById('reg-email').value;
+        const password = document.getElementById('reg-password').value;
+        const firstname = document.getElementById('reg-firstname').value;
+        const lastname = document.getElementById('reg-lastname').value;
+        const address = document.getElementById('reg-address').value;
+      
+        try {
+          const response = await fetch('http://localhost:8080/api/auth/register', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email, password, firstname, lastname, address }),
+          });
+          const data = await response.json();
+          if (response.ok) {
+            document.getElementById('register-status').textContent = 'Registration successful!';
+          } else {
+            document.getElementById('register-status').textContent = `Registration failed: ${data.message}`;
+          }
+        } catch (error) {
+          console.error('Error registering:', error);
+          document.getElementById('register-status').textContent = 'Error registering';
+        }
+      }
+      let currentUser = null;
+
+      async function login(event) {
+        event.preventDefault();
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+      
+        try {
+          const response = await fetch('http://localhost:8080/api/auth/login', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email, password }),
+          });
+          const data = await response.json();
+          if (response.ok) {
+            currentUser = data.user;
+            localStorage.setItem('currentUser', JSON.stringify(currentUser)); // Store user info in localStorage
+            localStorage.setItem('token', data.token); // Store token in localStorage
+            document.getElementById('login-status').textContent = 'Login successful!';
+            document.getElementById('user-id-display').textContent = `UserID: ${currentUser.id}`; // Display UserID
+            showAdminPanel();
+             // Show the admin panel if the user is an admin
+          } else {
+            document.getElementById('login-status').textContent = `Login failed: ${data.message}`;
+          }
+        } catch (error) {
+          console.error('Error logging in:', error);
+          document.getElementById('login-status').textContent = 'Error logging in';
+        }
+      }
+      
+      function showAdminPanel() {
+        const user = JSON.parse(localStorage.getItem('currentUser'));
+        if (user && user.isAdmin) {
+          document.getElementById('admin').style.display = 'block';
+        } else {
+          document.getElementById('admin').style.display = 'none';
+        }
+      }
+      
+      // Call showAdminPanel on page load to check if the user is an admin
+      document.addEventListener('DOMContentLoaded', showAdminPanel);
+      
+let cart = [];
+
+    function addToCart(productId) {
+      cart.push(productId);
+      updateCartDisplay();
+    }
+    
+    function updateCartDisplay() {
+      const cartItems = document.getElementById('cart-items');
+      cartItems.innerHTML = '';
+      cart.forEach(productId => {
+        const listItem = document.createElement('li');
+        listItem.textContent = `Product ID: ${productId}`;
+        cartItems.appendChild(listItem);
+      });
+    }
+    
+    async function checkout() {
+      if (!currentUser) {
+        alert('Please login to checkout');
+        return;
+      }
+    
+      try {
+        const response = await fetch('http://localhost:8080/api/users/purchase-products', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ userId: currentUser._id, productIds: cart }),
+        });
+        const data = await response.json();
+        if (response.ok) {
+          alert('Purchase successful!');
+          cart = [];
+          updateCartDisplay();
+        } else {
+          alert(`Purchase failed: ${data.message}`);
+        }
+      } catch (error) {
+        console.error('Error during checkout:', error);
+        alert('Error during checkout');
+      }
+    }
+    
+    // Example: Add event listeners to your product buttons
+    document.querySelectorAll('.grid-item button').forEach(button => {
+      button.addEventListener('click', () => {
+        const productId = button.getAttribute('popovertarget');
+        addToCart(productId);
+      });
+    });
+    async function addCredits(event) {
+        event.preventDefault();
+        const userId = document.getElementById('user-id').value;
+        const credits = document.getElementById('credits').value;
+      
+        try {
+          const response = await fetch('http://localhost:8080/api/users/add-credits', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${localStorage.getItem('token')}` // Assuming the token is stored in local storage
+            },
+            body: JSON.stringify({ userId, credits })
+          });
+          const data = await response.json();
+          if (response.ok) {
+            document.getElementById('admin-status').textContent = 'Credits added successfully!';
+          } else {
+            document.getElementById('admin-status').textContent = `Failed to add credits: ${data.message}`;
+          }
+        } catch (error) {
+          console.error('Error adding credits:', error);
+          document.getElementById('admin-status').textContent = 'Error adding credits';
+        }
+      }
+      
+      function logout() {
+        localStorage.removeItem('currentUser');
+        localStorage.removeItem('token');
+        currentUser = null;
+        document.getElementById('login-status').textContent = '';
+        showAdminPanel();
+      }
+      
+      document.getElementById('logout-button').addEventListener('click', logout);
+      
