@@ -8,7 +8,7 @@ const connectString = process.env.CONNECT_STRING;
 // create new MongoClient instance and export it
 
 const options = {
-  dbName: "silkyway", // Specify the database name here
+  dbName: "silkyway-2", // Specify the database name here
 };
 
 const connectDB = async () => {

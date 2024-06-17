@@ -19,6 +19,7 @@
             <li><a href="signup.html">Sign Up</a></li>
         </ul>
     </nav>
+
     <section id="login">
         <h2>Login</h2>
         <form onsubmit="login(event)">
@@ -29,36 +30,15 @@
         <p id="login-status"></p>
         <p id="user-info"></p>
     </section>
+
     <section id="grid" class="grid-section">
-        <div class="grid-container">
-            <div class="grid-item grid-item-xl" data-product-id="1">
-                <img src="./pics/product_1.jpg" alt="Item 1">
-                <div class="overlay">Bag</div>
-                <button data-product-id="1">Add to Cart</button>
-            </div>
-            <div class="grid-item grid-item-xl" data-product-id="2">
-                <img src="./pics/product_2.jpg" alt="Item 2">
-                <div class="overlay">Nerf Gun</div>
-                <button data-product-id="2">Add to Cart</button>
-            </div>
-            <!-- Add more products as needed -->
-        </div>
+        <div class="grid-container"></div>
     </section>
 
     <section id="scroll" class="horizontal-section">
         <h2>Angebote</h2>
         <div class="h-scroll-container">
-            <ul class="h-scroll-wrapper">
-                <li class="grid-item grid-item-m">
-                    <img src="./pics/product_1.jpg" alt="Item 1">
-                    <div class="overlay">Bag</div>
-                </li>
-                <li class="grid-item grid-item-m">
-                    <img src="./pics/product_2.jpg" alt="Item 2">
-                    <div class="overlay">Nerf Gun</div>
-                </li>
-                <!-- Add more products as needed -->
-            </ul>
+            <ul class="h-scroll-wrapper"></ul>
         </div>
     </section>
 
@@ -67,19 +47,8 @@
             <li class="active" onclick="filter(this, 'all')">Alle Kategorien</li>
             <li onclick="filter(this, 'cat1')">Hacking</li>
             <li onclick="filter(this, 'cat2')">Lebensmittel</li>
-            <!-- Add more categories as needed -->
         </ul>
-        <div class="grid-container filter-container-items">
-            <div class="grid-item grid-item-l cat1">
-                <img src="./pics/product_1.jpg" alt="Item 1">
-                <div class="overlay">Bag</div>
-            </div>
-            <div class="grid-item grid-item-l cat1">
-                <img src="./pics/product_2.jpg" alt="Item 2">
-                <div class="overlay">Nerf Gun</div>
-            </div>
-            <!-- Add more filtered products as needed -->
-        </div>
+        <div class="grid-container filter-container-items"></div>
     </section>
 
     <div>
@@ -88,7 +57,7 @@
         <button onclick="checkout()">Checkout</button>
     </div>
     <button id="logout-button">Logout</button>
-
+    <button id="empty-cart-button">Empty Cart</button>
     <div id="admin" style="display:none;">
         <h2>Admin Panel</h2>
         <form onsubmit="addCredits(event)">

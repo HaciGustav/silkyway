@@ -26,6 +26,7 @@ const {
   getUsers,
   addCredits,
   purchaseProductWithCredits,
+  addProductToCart,
 } = require("./api/controllers/user.controller");
 
 
@@ -38,6 +39,8 @@ app.use("*.css", (req, res, next) => {
 });
 app.use("api/users/purchaseProductWithCredits", authenticateToken);
 app.use("/api/users/add-credits", authenticateToken);
+//app.use("/api/users", addProductToCart);
+
 const PORT = process.env.PORT || 8080;
 
 app.get("/", (req, res) => {
@@ -63,6 +66,7 @@ router.post("/auth/login", loginUser);
 //
 //*USER
 router.get("/users", getUsers);
+router.post("/users/:userId/cart/:productId", authenticateToken, addProductToCart);
 
 router.put("/users/:id", (req, res) => {
   //TODO:

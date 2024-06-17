@@ -1,5 +1,6 @@
 let currentUser;
 let token;
+let cart = [];
 
 document.addEventListener('DOMContentLoaded', () => {
     currentUser = JSON.parse(localStorage.getItem('currentUser'));
@@ -7,6 +8,41 @@ document.addEventListener('DOMContentLoaded', () => {
     displayUserInfo();
     showAdminPanel();
     setupCart();
+    fetchProducts();
+
+    document.getElementById('logout-button').addEventListener('click', logout);
+
+    if (currentUser && currentUser.isAdmin) {
+        document.getElementById('admin').style.display = 'block';
+    } else {
+        document.getElementById('admin').style.display = 'none';
+    }
+});
+
+async function fetchProducts() {
+    try {
+        const response = await fetch('http://localhost:8080/api/products');
+        const products = await response.json();
+        displayProducts(products);
+    } catch (error) {
+        console.error('Error fetching products:', error);
+    }
+}
+
+function displayProducts(products) {
+    const gridContainer = document.querySelector('.grid-container');
+    gridContainer.innerHTML = '';
+    products.forEach(product => {
+        const gridItem = document.createElement('div');
+        gridItem.classList.add('grid-item', 'grid-item-xl');
+        gridItem.setAttribute('data-product-id', product._id);
+        gridItem.innerHTML = `
+            <img src="${product.images[0].url}" alt="${product.name}">
+            <div class="overlay">${product.name}</div>
+            <button data-product-id="${product._id}">Add to Cart</button>
+        `;
+        gridContainer.appendChild(gridItem);
+    });
 
     document.querySelectorAll('.grid-item button').forEach(button => {
         button.addEventListener('click', () => {
@@ -14,18 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
             addToCart(productId);
         });
     });
-
-    if (document.getElementById('logout-button')) {
-        document.getElementById('logout-button').addEventListener('click', logout);
-    }
-
-    if (currentUser && currentUser.isAdmin) {
-        // Display admin panel if the user is an admin
-        document.getElementById('admin').style.display = 'block';
-    } else {
-        document.getElementById('admin').style.display = 'none';
-    }
-});
+}
 
 function setupCart() {
     cart = JSON.parse(localStorage.getItem('cart')) || [];
@@ -55,10 +80,6 @@ async function checkout() {
         return;
     }
 
-    console.log('Starting checkout process...');
-    console.log('User ID:', userId);
-    console.log('Cart:', cart);
-
     try {
         const response = await fetch('http://localhost:8080/api/users/purchase-product', {
             method: 'POST',
@@ -70,11 +91,7 @@ async function checkout() {
         });
 
         const data = await response.json();
-        console.log('Response:', response);
-        console.log('Response Data:', data);
-
         if (response.ok) {
-            console.log('Purchase successful', data);
             cart = [];
             localStorage.removeItem('cart');
             updateCartDisplay();
@@ -118,8 +135,8 @@ async function login(event) {
 
 async function addCredits(event) {
     event.preventDefault();
-    const userId = currentUser._id; // Assuming you want to add credits to the currently logged-in user
-    const credits = parseInt(document.getElementById('credits').value); // Parse to integer
+    const userId = currentUser._id;
+    const credits = parseInt(document.getElementById('credits').value);
 
     try {
         const response = await fetch('http://localhost:8080/api/users/add-credits', {
@@ -133,10 +150,9 @@ async function addCredits(event) {
         const data = await response.json();
         if (response.ok) {
             document.getElementById('admin-status').textContent = 'Credits added successfully!';
-            // Update local user's credits
             currentUser.credits += credits;
             localStorage.setItem('currentUser', JSON.stringify(currentUser));
-            displayUserInfo(); // Update UI with new credits
+            displayUserInfo();
         } else {
             document.getElementById('admin-status').textContent = `Failed to add credits: ${data.message}`;
         }
@@ -150,9 +166,8 @@ function logout() {
     localStorage.removeItem('currentUser');
     localStorage.removeItem('token');
     currentUser = null;
-    document.getElementById('login-status').textContent = '';
-    showAdminPanel();
     displayUserInfo();
+    showAdminPanel();
 }
 
 function displayUserInfo() {
@@ -167,10 +182,5 @@ function displayUserInfo() {
 function showAdminPanel() {
     const user = JSON.parse(localStorage.getItem('currentUser'));
     const isAdmin = user && user.isAdmin;
-
-    if (isAdmin) {
-        document.getElementById('admin').style.display = 'block';
-    } else {
-        document.getElementById('admin').style.display = 'none';
-    }
+    document.getElementById('admin').style.display = isAdmin ? 'block' : 'none';
 }
