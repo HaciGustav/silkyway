@@ -1,9 +1,5 @@
-let currentUser;
-let token;
-
 document.addEventListener('DOMContentLoaded', () => {
     currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    token = localStorage.getItem('token');
     displayUserInfo();
     showAdminPanel();
     setupCart();
@@ -18,15 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (document.getElementById('logout-button')) {
         document.getElementById('logout-button').addEventListener('click', logout);
     }
-
-    if (currentUser && currentUser.isAdmin) {
-        // Display admin panel if the user is an admin
-        document.getElementById('admin').style.display = 'block';
-    } else {
-        document.getElementById('admin').style.display = 'none';
-    }
 });
-
 function setupCart() {
     cart = JSON.parse(localStorage.getItem('cart')) || [];
     updateCartDisplay();
@@ -60,6 +48,9 @@ async function checkout() {
     console.log('Cart:', cart);
 
     try {
+        const token = localStorage.getItem('token');
+        console.log('Token:', token);
+
         const response = await fetch('http://localhost:8080/api/users/purchase-product', {
             method: 'POST',
             headers: {
@@ -116,45 +107,6 @@ async function login(event) {
     }
 }
 
-async function addCredits(event) {
-    event.preventDefault();
-    const userId = currentUser._id; // Assuming you want to add credits to the currently logged-in user
-    const credits = parseInt(document.getElementById('credits').value); // Parse to integer
-
-    try {
-        const response = await fetch('http://localhost:8080/api/users/add-credits', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`,
-            },
-            body: JSON.stringify({ userId, credits }),
-        });
-        const data = await response.json();
-        if (response.ok) {
-            document.getElementById('admin-status').textContent = 'Credits added successfully!';
-            // Update local user's credits
-            currentUser.credits += credits;
-            localStorage.setItem('currentUser', JSON.stringify(currentUser));
-            displayUserInfo(); // Update UI with new credits
-        } else {
-            document.getElementById('admin-status').textContent = `Failed to add credits: ${data.message}`;
-        }
-    } catch (error) {
-        console.error('Error adding credits:', error);
-        document.getElementById('admin-status').textContent = 'Error adding credits';
-    }
-}
-
-function logout() {
-    localStorage.removeItem('currentUser');
-    localStorage.removeItem('token');
-    currentUser = null;
-    document.getElementById('login-status').textContent = '';
-    showAdminPanel();
-    displayUserInfo();
-}
-
 function displayUserInfo() {
     const userInfo = document.getElementById('user-info');
     if (currentUser) {
@@ -172,5 +124,45 @@ function showAdminPanel() {
         document.getElementById('admin').style.display = 'block';
     } else {
         document.getElementById('admin').style.display = 'none';
+    }
+}
+
+function logout() {
+    localStorage.removeItem('currentUser');
+    localStorage.removeItem('token');
+    currentUser = null;
+    document.getElementById('login-status').textContent = '';
+    showAdminPanel();
+    displayUserInfo();
+}
+async function addCredits(userId, credits) {
+    try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            throw new Error('Token not found');
+        }
+
+        const response = await fetch('http://localhost:8080/api/users/add-credits', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+            },
+            body: JSON.stringify({ userId, credits }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            console.log('Credits added successfully:', data);
+            // Update currentUser locally
+            currentUser.credits += credits;
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            displayUserInfo(); // Update UI with new credits
+        } else {
+            console.error('Failed to add credits:', data.message);
+        }
+    } catch (error) {
+        console.error('Error adding credits:', error);
     }
 }

@@ -1,112 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Silkyway - Login</title>
-        <style>
-            html, body{
-                margin: 0;
-                padding: 0;
-                background: #040613;
-            }
-            body {
-                font-family: Arial, sans-serif;
-                display: flex;
-                flex-flow: row nowrap;
-                justify-content: center;
-                align-items: center;
-                height: 100vh;
-            }
-            
-            .background-image {
-                height: 100%;
-                flex: 1;
-                background-image: url('/images/logo.png');
-                background-size: contain;
-                background-repeat: no-repeat;
-                background-position: center;
-            }
-
-            .form_container{
-                height: 100%;
-                flex: 1;
-                display: grid;
-                place-items: center;
-            }
-            
-            .login-form {
-                background-color: #d0b0ff;
-                padding: .5rem;
-                border-radius: calc(5px + .5rem);
-                text-align: center;
-            }
-            
-            .login-form h2 {
-                margin: 1rem 0 .5rem 0;
-                color: #7b4dc0;
-                font-size: 40px;
-                font-weight: bold;
-            }
-            
-            .login-form input {
-                width: 100%;
-                padding: 0.5rem;
-                margin: 0.25rem 0;
-                border: none;
-                background: #e3d0ff;
-                font-weight: bold;
-                border-radius: 5px;
-                box-sizing: border-box;
-                text-align: center;
-            }
-            
-            .login-form button {
-                width: 100%;
-                padding: 0.5rem;
-                margin: 0.25rem 0;
-                background-color: #7b4dc0;
-                border: none;
-                border-radius: 5px;
-                color: white;
-                font-size: 1rem;
-                cursor: pointer;
-            }
-            
-            .login-form button:hover {
-                background-color: #9765e2;
-            }
-
-            .bg-image-2{
-                display: none;
-            }
-            
-            @media (max-width: 768px) {
-                .bg-image-2{
-                    display: block;
-                    width: 50%;
-                    height: auto;
-                }
-                .background-image{
-                    display: none;
-                }
-                .container {
-                    flex-direction: row;
-                    justify-content: space-between;
-                }
-            }
-        </style>
+    <link rel="stylesheet" href="styles/login.css">
 </head>
+
 <body>
     <div class="background-image"></div>
     <div class="form_container">
-        <form class="login-form">
+        <form class="login-form" onsubmit="login(event)">
             <div class="bg-image-2"></div>
             <h2>Login</h2>
-            <input type="text" placeholder="Username" required>
-            <input type="password" placeholder="Password" required>
+            <input type="email" id="email" placeholder="Email" required>
+            <input type="password" id="password" placeholder="Password" required>
             <button type="submit">Login</button>
+            <p id="login-status"></p>
+            <p><a href="index.html">Back to Home</a></p>
         </form>
     </div>
+    <script defer src="scripts/index.js"></script>
 </body>
+
 </html>

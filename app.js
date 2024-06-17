@@ -36,6 +36,7 @@ app.use("*.css", (req, res, next) => {
   res.set("Content-Type", "text/css");
   next();
 });
+app.use("api/users/purchaseProductWithCredits", authenticateToken);
 app.use("/api/users/add-credits", authenticateToken);
 const PORT = process.env.PORT || 8080;
 
@@ -70,16 +71,17 @@ router.delete("/users/:id", (req, res) => {
   //TODO:
 });
 // Add credits to a user
-router.post("/users/add-credits", addCredits, authenticateToken);
+router.post("/users/add-credits", authenticateToken, addCredits);
 ///router.post("/make-admin", authenticateJWT, makeAdmin); 
-//
+// BUY SOMETHING
+router.post("/users/purchase-product", authenticateToken, purchaseProductWithCredits);
 //
 //
 //*PRODUCT
 router.get("/products", getAllProducts);
 router.get("/products/getProductsByFilter", getProductsByFilter);
 
-router.post("/products/purchase-product", purchaseProductWithCredits);
+
 router.post("/products", createProduct);
 router.post("/products/email", (req, res) => {
   sendPurchaseMail();

@@ -1,5 +1,6 @@
 const User = require("../models/user.model");
 const Product = require("../models/product.model");
+const mongoose = require("mongoose");
 
 // Get Users
 const getUsers = async (req, res) => {
@@ -38,27 +39,39 @@ const addCredits = async (req, res) => {
   const purchaseProductWithCredits = async (req, res) => {
     const session = await mongoose.startSession();
     session.startTransaction();
-    
+  
     try {
-      const { userId, productIds } = req.body; // Expecting an array of product IDs
+      const { userId, productIds } = req.body;
+      console.log('Received purchase request:', { userId, productIds });
+  
       const user = await User.findById(userId).session(session);
       if (!user) {
         await session.abortTransaction();
+        console.log('User not found');
         return res.status(404).json({ message: "User not found" });
       }
   
       let totalCost = 0;
       const products = [];
   
-      // Calculate total cost and check product availability
-      for (const productId of productIds) {
+      // Validate and convert product IDs
+      const validProductIds = productIds.map(id => {
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+          throw new Error(`Invalid product ID: ${id}`);
+        }
+        return mongoose.Types.ObjectId(id);
+      });
+  
+      for (const productId of validProductIds) {
         const product = await Product.findById(productId).session(session);
         if (!product) {
           await session.abortTransaction();
+          console.log(`Product with ID ${productId} not found`);
           return res.status(404).json({ message: `Product with ID ${productId} not found` });
         }
         if (product.stock < 1) {
           await session.abortTransaction();
+          console.log(`Product ${product.name} is out of stock`);
           return res.status(400).json({ message: `Product ${product.name} is out of stock` });
         }
         totalCost += product.price;
@@ -67,10 +80,10 @@ const addCredits = async (req, res) => {
   
       if (user.credits < totalCost) {
         await session.abortTransaction();
+        console.log('Insufficient credits');
         return res.status(400).json({ message: "Insufficient credits" });
       }
   
-      // Deduct credits and reduce product stock
       user.credits -= totalCost;
       for (const product of products) {
         product.stock -= 1;
@@ -79,9 +92,11 @@ const addCredits = async (req, res) => {
       await user.save({ session });
   
       await session.commitTransaction();
+      console.log('Purchase successful');
       res.status(200).json({ message: "Products purchased successfully", user });
     } catch (error) {
       await session.abortTransaction();
+      console.error('Error during purchase:', error);
       res.status(500).json({ message: error.message });
     } finally {
       session.endSession();
