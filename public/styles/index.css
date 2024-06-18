@@ -9,6 +9,11 @@ body {
   background-color: #fff;
 }
 
+main {
+  position: relative;
+  min-height: 100vh;
+}
+
 .navbar {
   position: sticky;
   top: 0;
@@ -23,6 +28,8 @@ body {
 
 .navbar img {
   height: 50px;
+  width: 50px;
+  border-radius: 50%;
 }
 
 .navbar ul {
@@ -34,6 +41,7 @@ body {
 
 .navbar li {
   margin: 0 1rem;
+  cursor: pointer;
 }
 
 .navbar a {
@@ -45,6 +53,11 @@ body {
 .horizontal-section,
 .flex-section {
   padding: 2rem;
+}
+
+.horizontal-section,
+.flex-section {
+  display: none;
 }
 
 .grid-container {
@@ -62,10 +75,17 @@ body {
   opacity: 1;
   transition: display 0s, opacity 0.5s linear, scale 0.2s, filter 0.3s;
 }
+.grid-item .price-span {
+  display: inline-block;
+  font-size: small;
+}
 
 .grid-item:hover {
   border-radius: 10px;
   filter: drop-shadow(0px 0px 5px rgba(0, 255, 0, 0.1333333333));
+}
+.grid-item:hover button {
+  opacity: 1;
 }
 
 .grid-item.hidden {
@@ -108,13 +128,13 @@ body {
   overflow: auto;
 }
 
-[data-animated=true] .h-scroll-wrapper {
+[data-animated="true"] .h-scroll-wrapper {
   flex-wrap: nowrap;
   width: max-content;
   animation: scroll-h 60s linear infinite;
 }
 
-[data-animated=true] .h-scroll-wrapper:has(.grid-item:hover) {
+[data-animated="true"] .h-scroll-wrapper:has(.grid-item:hover) {
   animation-play-state: paused;
 }
 
@@ -122,9 +142,15 @@ body {
   height: 300px;
 }
 
-.h-scroll-container[data-animated=true] {
+.h-scroll-container[data-animated="true"] {
   overflow: hidden;
-  -webkit-mask: linear-gradient(90deg, transparent, white 20%, white 80%, transparent);
+  -webkit-mask: linear-gradient(
+    90deg,
+    transparent,
+    white 20%,
+    white 80%,
+    transparent
+  );
   mask: linear-gradient(90deg, transparent, white 20%, white 80%, transparent);
 }
 
@@ -179,16 +205,6 @@ body {
   flex: 2;
 }
 
-@media (max-width: 768px) {
-  .flex-item {
-    flex: 1 1 calc(50% - 1rem);
-  }
-}
-@media (max-width: 480px) {
-  .flex-item {
-    flex: 1 1 100%;
-  }
-}
 .product_popover {
   height: 80vh;
   width: 80vw;
@@ -199,9 +215,88 @@ body {
   background-color: rgba(0, 0, 0, 0.3333333333);
 }
 
-button:has(.grid-item) {
+.grid-item button {
   border: none;
-  background-color: transparent;
+  display: block;
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  height: 2rem;
+  width: 2rem;
+  border-radius: 50%;
+  background-color: #1976d2;
+  opacity: 0;
+  z-index: 2;
+  color: #fff;
+  font-size: 1.3rem;
+  transition: opacity 0.3s;
+  cursor: pointer;
 }
 
+/* Login Section Styles */
+
+.login-container {
+  height: 100vh;
+  width: 100vw;
+  position: absolute;
+  z-index: 10;
+  /* border: 4px solid red; */
+  display: none;
+  place-items: center;
+  backdrop-filter: blur(10px);
+}
+.login-container div {
+  border: 2px solid red;
+  padding: 1rem;
+  border-radius: 10px;
+  position: relative;
+  background-color: #fff;
+}
+
+.login-container form {
+  display: flex;
+  flex-direction: column;
+  row-gap: 10px;
+}
+
+.close-login {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  color: #fff;
+  background-color: #f00;
+  border-radius: 5px;
+  display: block;
+  width: 1.5rem;
+  height: 1.5rem;
+  border: none;
+  cursor: pointer;
+}
+.cart-container {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  border: 2px solid red;
+  min-width: 150px;
+  border-radius: 10px;
+  transition: opacity 1s;
+  padding: 1rem;
+  /* display: none; */
+  z-index: -8;
+  opacity: 0;
+}
+
+@media (max-width: 768px) {
+  .flex-item {
+    flex: 1 1 calc(50% - 1rem);
+  }
+}
+@media (max-width: 480px) {
+  .flex-item {
+    flex: 1 1 100%;
+  }
+  .cart-container {
+    width: 90vw;
+  }
+}
 /*# sourceMappingURL=index.css.map */

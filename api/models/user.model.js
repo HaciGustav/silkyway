@@ -33,7 +33,9 @@ const UserModel = new Schema(
       type: Number,
       default: 0,
     },
+    isAdmin: { type: Boolean, default: true }
   },
+  
   { collection: "users" }
 );
 module.exports = model("User", UserModel);
