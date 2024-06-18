@@ -66,8 +66,50 @@ router.post("/auth/login", loginUser);
 //
 //*USER
 router.get("/users", getUsers);
-router.post("/users/:userId/cart/:productId", authenticateToken, addProductToCart);
+app.get('/api/users/:userId', async (req, res) => {
+  try {
+      const { userId } = req.params;
 
+      if (!mongoose.Types.ObjectId.isValid(userId)) {
+          return res.status(400).json({ message: "Invalid User ID format" });
+      }
+
+      const user = await User.findById(userId);
+      if (!user) {
+          return res.status(404).json({ message: "User not found" });
+      }
+
+      res.status(200).json(user);
+  } catch (error) {
+      res.status(500).json({ message: error.message });
+  }
+});
+router.post("/users/:userId/cart", authenticateToken, addProductToCart);
+router.post('/checkout', async (req, res) => {
+  const { userId, total } = req.body;
+
+  if (!userId || !total) {
+      return res.status(400).json({ message: 'User ID and total required' });
+  }
+
+  try {
+      const user = await User.findById(userId);
+      if (!user) {
+          return res.status(404).json({ message: 'User not found' });
+      }
+
+      if (user.credits < total) {
+          return res.status(400).json({ message: 'Insufficient credits' });
+      }
+
+      user.credits -= total;
+      await user.save();
+
+      res.status(200).json({ message: 'Purchase successful', newBalance: user.credits });
+  } catch (error) {
+      res.status(500).json({ message: error.message });
+  }
+});
 router.put("/users/:id", (req, res) => {
   //TODO:
 });

@@ -102,33 +102,35 @@ const addCredits = async (req, res) => {
         session.endSession();
     }
 };
-//* ADD PRODUCT TO CART
+
 const addProductToCart = async (req, res) => {
-  try {
-    const { userId, productId } = req.body;
+  const { userId } = req.params;
+  const { productId } = req.body;
 
-    if (!mongoose.Types.ObjectId.isValid(userId) || !mongoose.Types.ObjectId.isValid(productId)) {
+  if (!mongoose.Types.ObjectId.isValid(userId) || !mongoose.Types.ObjectId.isValid(productId)) {
       return res.status(400).json({ message: "Invalid User ID or Product ID" });
-    }
+  }
 
-    const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
+  try {
+      const user = await User.findById(userId);
+      if (!user) {
+          return res.status(404).json({ message: "User not found" });
+      }
 
-    const product = await Product.findById(productId);
-    if (!product) {
-      return res.status(404).json({ message: "Product not found" });
-    }
+      const product = await Product.findById(productId);
+      if (!product) {
+          return res.status(404).json({ message: "Product not found" });
+      }
 
-    user.cart.push(productId);
-    await user.save();
+      user.cart.push(productId);
+      await user.save();
 
-    res.status(200).json(user);
+      res.status(200).json({ message: "Product added to cart successfully" });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+      res.status(500).json({ message: error.message });
   }
 };
+
 
 
 module.exports = {
