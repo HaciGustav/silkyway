@@ -49,6 +49,9 @@ async function fetchProducts() {
     try {
         const response = await fetch('http://localhost:8080/api/products');
         products = await response.json(); // Update products
+        products.forEach(product => {
+            productStocks[product._id] = product.stock; // Initialize the stock for each product
+        });
         displayProducts(products);
     } catch (error) {
         console.error('Error fetching products:', error);
@@ -102,6 +105,7 @@ function addToCart(productId) {
         product.stock -= 1;
         localStorage.setItem('cart', JSON.stringify(cart));
         updateCartDisplay();
+        displayProducts(products);
         
     }
 }
@@ -120,24 +124,7 @@ function updateCartDisplay() {
         cartItems.appendChild(listItem);
     });
 }
-/*
-function setupCart() {
-    cart = JSON.parse(localStorage.getItem('cart')) || [];
-    updateCartDisplay();
-}
-
-function updateCartDisplay() {
-    const cartItems = document.getElementById('cart-items');
-    cartItems.innerHTML = '';
-    cart.forEach(productId => {
-        const listItem = document.createElement('li');
-        listItem.textContent = `Name:${productId.name}, Price: $${productId.price}, Quantity: ${productId.quanitity}`;
-        
-        cartItems.appendChild(listItem);
-    });
-}*/
-
-function checkout() {
+async function checkout() {
     const total = cart.reduce((sum, product) => sum + product.price, 0);
 
     if (total > currentUser.credits) {
@@ -145,13 +132,44 @@ function checkout() {
         return;
     }
 
-    currentUser.credits -= total;
-    cart = [];
-    localStorage.removeItem('cart');
-    updateCartDisplay();
-    displayUserInfo();
+    // Get product IDs from the cart
+    const productIds = cart.map(product => product._id);
 
-    alert('Purchase successful!');
+    try {
+        // Send a request to the server-side function
+        const response = await fetch('http://localhost:8080/api/users/purchase-product', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+                userId: currentUser._id,
+                productIds: productIds,
+            }),
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        // Update the current user's credits
+        currentUser.credits = data.user.credits;
+
+        // Clear the cart
+        cart = [];
+        localStorage.removeItem('cart');
+        updateCartDisplay();
+        displayUserInfo();
+        alert('Purchase successful!');
+        displayProducts(products);
+    } catch (error) {
+        console.error('Error during purchase:', error);
+        alert('Purchase failed!');
+        displayProducts(products);
+    }
 }
 async function addCredits(event) {
     event.preventDefault();
@@ -222,12 +240,29 @@ function logout() {
     displayUserInfo();
 }
 
-function displayUserInfo() {
-    const userInfo = document.getElementById('user-info');
-    if (currentUser) {
-        userInfo.textContent = `Logged in as: ${currentUser.email} ${currentUser.firstname} ${currentUser.lastname} (ID: ${currentUser._id}, Coins: ${currentUser.credits})`;
+async function fetchCurrentUser() {
+    const token = localStorage.getItem('token'); // Replace this with the actual way you're storing the token
+    const response = await fetch('http://localhost:8080/api/currentUser', {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+    if (response.ok) {
+        const currentUser = await response.json();
+        return currentUser;
     } else {
-        userInfo.textContent = '';
+        console.error('Failed to fetch current user:', response.statusText);
+        return null;
+    }
+}
+
+async function displayUserInfo() {
+    const userInfo = document.getElementById('user-info');
+    const currentUser = await fetchCurrentUser();
+    if (currentUser) {
+        userInfo.textContent = `User ID: ${currentUser.id}, Name: ${currentUser.firstname} ${currentUser.lastname}, Silky Dinars: ${currentUser.credits}`;
+    } else {
+        userInfo.textContent = 'No user is currently logged in.';
     }
 }
 
@@ -235,6 +270,10 @@ function emptyCart() {
     cart = [];
     localStorage.removeItem('cart');
     updateCartDisplay();
+    alert('Cart emptied!');
+    products = fetchProducts()
+    displayProducts(products);
+    
 }
 
 function showAdminPanel() {

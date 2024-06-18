@@ -24,6 +24,7 @@ const {
 const { sendPurchaseMail } = require("./api/utils/email");
 const {
   getUsers,
+  getCurrentUser,
   addCredits,
   purchaseProductWithCredits,
   
@@ -66,6 +67,7 @@ router.post("/auth/login", loginUser);
 //
 //*USER
 router.get("/users", getUsers);
+router.get("/currentUser", authenticateToken, getCurrentUser);
 app.get('/api/users/:userId', async (req, res) => {
   try {
       const { userId } = req.params;
