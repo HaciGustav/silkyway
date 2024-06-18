@@ -3,7 +3,7 @@ let token;
 let cart = [];
 let products = [];
 let productStocks = {};
-
+displayUserInfo();
 // login modal functions
 const openLogin = (e) => {
   const loginContainer = document.querySelector("#login");
@@ -62,6 +62,7 @@ document.addEventListener("DOMContentLoaded", () => {
   addAllButton.addEventListener("click", () => {
     products.forEach((product) => {
       addToCart(product._id, product.price);
+      updateCartTotal();
     });
   });
 
@@ -114,6 +115,8 @@ function displayProducts(products) {
     button.addEventListener("click", () => {
       const productId = button.parentElement.getAttribute("data-product-id");
       addToCart(productId);
+      updateCartDisplay();
+      updateCartTotal();
       productStocks[productId]--; // Reduce the stock for this product
       button.parentElement.querySelector(".overlay").textContent = `${
         products.find((p) => p._id === productId).name
@@ -136,13 +139,16 @@ function addToCart(productId) {
     const existingItem = cart.find((item) => item._id === productId);
     if (existingItem) {
       existingItem.quantity += 1;
+      updateCartTotal();
     } else {
       cart.push({ ...product, quantity: 1 });
+
     }
     product.stock -= 1;
     localStorage.setItem("cart", JSON.stringify(cart));
     updateCartDisplay();
     displayProducts(products);
+    updateCartTotal();
   }
 }
 
@@ -218,6 +224,10 @@ async function checkout() {
     displayProducts(products);
   }
 }
+function updateCartTotal() {
+    const total = cart.reduce((sum, product) => sum + (product.price * product.quantity), 0);
+    document.getElementById('cart-total').textContent = 'Total: ' + total;
+  }
 async function addCredits(event) {
   event.preventDefault();
   const userId = currentUser._id;
@@ -304,7 +314,7 @@ function logout() {
 }
 
 async function fetchCurrentUser() {
-  const token = localStorage.getItem("token"); // Replace this with the actual way you're storing the token
+  const token = localStorage.getItem("token"); 
   const response = await fetch("http://localhost:8080/api/currentUser", {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -320,14 +330,20 @@ async function fetchCurrentUser() {
 }
 
 async function displayUserInfo() {
-  const userInfo = document.getElementById("user-info");
-  const currentUser = await fetchCurrentUser();
-  if (currentUser) {
-    userInfo.textContent = `User ID: ${currentUser.id}, Name: ${currentUser.firstname} ${currentUser.lastname}, Silky Dinars: ${currentUser.credits}`;
-  } else {
-    userInfo.textContent = "No user is currently logged in.";
+    const userInfoDisplay = document.getElementById("user-info-display");
+    const silkyDinarsJar = document.getElementById("silky-dinars-jar");
+    const currentUser = await fetchCurrentUser();
+    if (currentUser) {
+      userInfoDisplay.textContent = `User ID: ${currentUser.id}, Name: ${currentUser.firstname} ${currentUser.lastname}`;
+      userInfoDisplay.addEventListener('click', () => {
+        alert(`User ID: ${currentUser.id}, Name: ${currentUser.firstname} ${currentUser.lastname}`);
+      });
+      silkyDinarsJar.textContent = `Silky Dinars Jar: ${currentUser.credits}`;
+    } else {
+      userInfoDisplay.textContent = "No user is currently logged in.";
+      silkyDinarsJar.textContent = "";
+    }
   }
-}
 
 function emptyCart() {
   cart = [];
@@ -336,6 +352,7 @@ function emptyCart() {
   //   alert("Cart emptied!");
   products = fetchProducts();
   displayProducts(products);
+  updateCartTotal();
 }
 
 function showAdminPanel() {

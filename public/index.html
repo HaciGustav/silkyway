@@ -10,8 +10,10 @@
   <body>
     <nav class="navbar">
       <img src="../assets/logo.jpeg" class="logo" alt="Logo" />
+      <div id="silky-dinars-jar" style="color: gold;"></div>
       <ul>
         <li><a href="#grid">Home</a></li>
+        
         <!-- <li><a href="#scroll">Scroll</a></li> -->
         <!-- <li><a href="#filter">Filter</a></li> -->
         <li id="login-btn">Login</li>
@@ -19,6 +21,7 @@
         <!-- <li><a href="login.html">Login</a></li> -->
         <!-- <li><a href="signup.html">Sign Up</a></li> -->
       </ul>
+     
     </nav>
     <main>
       <section id="login" class="login-container">
@@ -69,6 +72,7 @@
         <!-- <button id="logout-button">Logout</button> -->
         <button id="empty-cart-button">Empty Cart</button>
       </div>
+  
       <div id="admin" style="display: none">
         <h2>Admin Panel</h2>
         <form onsubmit="addCredits(event)">
@@ -76,9 +80,11 @@
           <input type="number" id="credits" placeholder="Credits" required />
           <button type="submit">Add Credits</button>
           <p id="admin-status"></p>
+          
         </form>
+  
       </div>
-
+      <div id="user-info-display"style="color: purple;"></div>
       <script defer src="scripts/index.js"></script>
     </main>
   </body>
