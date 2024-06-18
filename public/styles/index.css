@@ -276,7 +276,7 @@ main {
   position: fixed;
   bottom: 2rem;
   right: 2rem;
-  border: 2px solid red;
+  border: 2px solid #1976d2;
   min-width: 150px;
   border-radius: 10px;
   transition: opacity 1s;
