@@ -72,7 +72,53 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Product"
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "Name of the product",
+                    "example": "Sample Product"
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "Description of the product",
+                    "example": "This is a sample product."
+                  },
+                  "price": {
+                    "type": "number",
+                    "description": "Price of the product",
+                    "example": 19.99
+                  },
+                  "stock": {
+                    "type": "number",
+                    "description": "Stock of the product",
+                    "example": 100
+                  },
+                  "images": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "description": "URLs of product images",
+                      "example": "http://example.com/image1.jpg"
+                    },
+                    "description": "Images of the product"
+                  },
+                  "categoryID": {
+                    "type": "string",
+                    "description": "ID of the product category",
+                    "example": "60d6e88f53112345678d960c"
+                  },
+                  "tags": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "description": "Tags associated with the product",
+                      "example": "new, sale, popular"
+                    },
+                    "description": "Tags of the product"
+                  }
+                },
+                "required": ["name", "price", "images"]
               }
             }
           },
@@ -91,6 +137,9 @@
           },
           "400": {
             "description": "Bad request"
+          },
+          "409": {
+            "description": "Conflict - Product with the same name already exists"
           },
           "500": {
             "description": "Internal server error"
@@ -171,109 +220,129 @@
       }
     },
     "/api/products/{id}": {
-      "get": {
-        "tags": ["Products"],
-        "summary": "Get a product by ID",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "example": "60d6e88f53112345678d960c"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Product details",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Product"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Product not found"
-          },
-          "500": {
-            "description": "Internal server error"
-          }
-        }
-      },
-      "put": {
-        "tags": ["Products"],
-        "summary": "Update a product by ID",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "example": "60d6e88f53112345678d960c"
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Product"
-              }
-            }
-          },
-          "required": true
+  "get": {
+    "tags": ["Products"],
+    "summary": "Get a product by ID",
+    "parameters": [
+      {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string"
         },
-        "responses": {
-          "200": {
-            "description": "Product updated",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Product"
-                }
-              }
+        "example": "60d6e88f53112345678d960c"
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "Product details",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Product"
             }
-          },
-          "404": {
-            "description": "Product not found"
-          },
-          "500": {
-            "description": "Internal server error"
           }
         }
       },
-      "delete": {
-        "tags": ["Products"],
-        "summary": "Delete a product by ID",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
+      "404": {
+        "description": "Product not found"
+      },
+      "500": {
+        "description": "Internal server error"
+      }
+    }
+  },
+  "put": {
+    "tags": ["Products"],
+    "summary": "Update a product",
+    "description": "Update the name, price, and stock of a product",
+    "parameters": [
+      {
+        "name": "id",
+        "in": "path",
+        "description": "ID of the product to update",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      }
+    ],
+    "requestBody": {
+      "description": "New name, price, and stock of the product",
+      "required": true,
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "New name of the product"
+              },
+              "price": {
+                "type": "number",
+                "description": "New price of the product"
+              },
+              "stock": {
+                "type": "number",
+                "description": "New stock of the product"
+              }
             },
-            "example": "60d6e88f53112345678d960c"
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "Product deleted"
-          },
-          "404": {
-            "description": "Product not found"
-          },
-          "500": {
-            "description": "Internal server error"
+            "required": ["name", "price", "stock"]
           }
         }
       }
     },
+    "responses": {
+      "200": {
+        "description": "Product updated successfully",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Product"
+            }
+          }
+        }
+      },
+      "400": {
+        "description": "All fields are required"
+      },
+      "404": {
+        "description": "Product not found"
+      },
+      "500": {
+        "description": "Internal server error"
+      }
+    }
+  },
+  "delete": {
+    "tags": ["Products"],
+    "summary": "Delete a product by ID",
+    "parameters": [
+      {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string"
+        },
+        "example": "60d6e88f53112345678d960c"
+      }
+    ],
+    "responses": {
+      "204": {
+        "description": "Product deleted"
+      },
+      "404": {
+        "description": "Product not found"
+      },
+      "500": {
+        "description": "Internal server error"
+      }
+    }
+  }
+},
     "/api/categories": {
       "get": {
         "tags": ["Categories"],

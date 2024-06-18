@@ -26,7 +26,7 @@ const {
   getUsers,
   addCredits,
   purchaseProductWithCredits,
-  addProductToCart,
+  
 } = require("./api/controllers/user.controller");
 
 
@@ -39,7 +39,7 @@ app.use("*.css", (req, res, next) => {
 });
 app.use("api/users/purchaseProductWithCredits", authenticateToken);
 app.use("/api/users/add-credits", authenticateToken);
-//app.use("/api/users", addProductToCart);
+
 
 const PORT = process.env.PORT || 8080;
 
@@ -84,7 +84,7 @@ app.get('/api/users/:userId', async (req, res) => {
       res.status(500).json({ message: error.message });
   }
 });
-router.post("/users/:userId/cart", authenticateToken, addProductToCart);
+
 router.post('/checkout', async (req, res) => {
   const { userId, total } = req.body;
 
