@@ -37,9 +37,9 @@ app.use("*.css", (req, res, next) => {
   res.set("Content-Type", "text/css");
   next();
 });
-app.use("api/users/purchaseProductWithCredits", authenticateToken);
-app.use("/api/users/add-credits", authenticateToken);
 
+app.use("/api/users/add-credits", authenticateToken);
+app.use("/api/users/purchase-product", authenticateToken);
 
 const PORT = process.env.PORT || 8080;
 
@@ -120,7 +120,7 @@ router.delete("/users/:id", (req, res) => {
 router.post("/users/add-credits", authenticateToken, addCredits);
 ///router.post("/make-admin", authenticateJWT, makeAdmin); 
 // BUY SOMETHING
-router.post("/users/purchase-product", authenticateToken, purchaseProductWithCredits);
+router.post("/users/purchase-product", purchaseProductWithCredits, authenticateToken);
 //
 //
 //*PRODUCT

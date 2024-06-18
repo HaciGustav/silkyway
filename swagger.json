@@ -95,35 +95,45 @@
                     "example": 100
                   },
                   "images": {
-                    "type": "array",
-                    "items": {
-                      "type": "string",
-                      "description": "URLs of product images",
-                      "example": "http://example.com/image1.jpg"
-                    },
-                    "description": "Images of the product"
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "url": {
+                        "type": "string",
+                        "description": "URLs of product images",
+                        "example": "http://example.com/image1.jpg"
+                      },
+                      "alt": {
+                        "type": "string",
+                        "description": "Image description",
+                        "example": "Image description"
+                      }
+                    }
                   },
-                  "categoryID": {
-                    "type": "string",
-                    "description": "ID of the product category",
-                    "example": "60d6e88f53112345678d960c"
-                  },
-                  "tags": {
-                    "type": "array",
-                    "items": {
-                      "type": "string",
-                      "description": "Tags associated with the product",
-                      "example": "new, sale, popular"
-                    },
-                    "description": "Tags of the product"
-                  }
+                  "description": "Images of the product"
                 },
-                "required": ["name", "price", "images"]
-              }
+                "categoryID": {
+                  "type": "string",
+                  "description": "ID of the product category",
+                  "example": "60d6e88f53112345678d960c"
+                },
+                "tags": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "description": "Tags associated with the product",
+                    "example": "new"
+                  },
+                  "description": "Tags of the product"
+                }
+              },
+              "required": ["name", "price", "images"]
             }
-          },
-          "required": true
+          }
         },
+        "required": true
+      },
         "responses": {
           "201": {
             "description": "Product created",

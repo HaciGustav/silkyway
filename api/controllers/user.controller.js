@@ -1,6 +1,7 @@
+const mongoose = require("mongoose");
 const User = require("../models/user.model");
 const Product = require("../models/product.model");
-const mongoose = require("mongoose");
+
 
 // Get Users
 const getUsers = async (req, res) => {
@@ -35,75 +36,82 @@ const addCredits = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: error.message });
   }};
-
+  
   const purchaseProductWithCredits = async (req, res) => {
-    const session = await mongoose.startSession();
-    session.startTransaction();
+    const { userId, productIds } = req.body;
+    console.log('Purchase request received:', { userId, productIds });
 
-    try {
-        const { userId, productIds } = req.body;
-        console.log('Received purchase request:', { userId, productIds });
+    const RETRY_LIMIT = 5;
+    let retryCount = 0;
 
-        const user = await User.findById(userId).session(session);
-        if (!user) {
-            await session.abortTransaction();
-            console.log('User not found');
-            return res.status(404).json({ message: "User not found" });
-        }
+    while (retryCount < RETRY_LIMIT) {
+        const session = await mongoose.startSession();
+        session.startTransaction();
 
-        let totalCost = 0;
-        const products = [];
-
-        // Validate and convert product IDs
-        const validProductIds = productIds.map(id => {
-            if (!mongoose.Types.ObjectId.isValid(id)) {
-                throw new Error(`Invalid product ID: ${id}`);
-            }
-            return new mongoose.Types.new.ObjectId(id); // Use 'new' here
-        });
-
-        for (const productId of validProductIds) {
-            const product = await Product.findById(productId).session(session);
-            if (!product) {
+        try {
+            const user = await User.findById(userId).session(session);
+            if (!user) {
                 await session.abortTransaction();
-                console.log(`Product with ID ${productId} not found`);
-                return res.status(404).json({ message: `Product with ID ${productId} not found` });
+                console.log('User not found');
+                return res.status(404).json({ message: "User not found" });
             }
-            if (product.stock < 1) {
+
+            let totalCost = 0;
+            const products = [];
+
+            const validProductIds = productIds.map(id => new mongoose.Types.ObjectId(id));
+
+            for (const productId of validProductIds) {
+                const product = await Product.findById(productId).session(session);
+                if (!product) {
+                    await session.abortTransaction();
+                    console.log(`Product with ID ${productId} not found`);
+                    return res.status(404).json({ message: `Product with ID ${productId} not found` });
+                }
+                if (product.stock < 1) {
+                    await session.abortTransaction();
+                    console.log(`Product ${product.name} is out of stock`);
+                    return res.status(400).json({ message: `Product ${product.name} is out of stock` });
+                }
+                totalCost += product.price;
+                products.push(product);
+            }
+
+            if (user.credits < totalCost) {
                 await session.abortTransaction();
-                console.log(`Product ${product.name} is out of stock`);
-                return res.status(400).json({ message: `Product ${product.name} is out of stock` });
+                console.log('Insufficient credits');
+                return res.status(400).json({ message: "Insufficient credits" });
             }
-            totalCost += product.price;
-            products.push(product);
-        }
 
-        if (user.credits < totalCost) {
+            user.credits -= totalCost;
+            for (const product of products) {
+                product.stock -= 1;
+                await product.save({ session });
+            }
+            await user.save({ session });
+
+            await session.commitTransaction();
+            console.log('Purchase successful');
+            return res.status(200).json({ message: "Products purchased successfully", user });
+        } catch (error) {
             await session.abortTransaction();
-            console.log('Insufficient credits');
-            return res.status(400).json({ message: "Insufficient credits" });
-        }
 
-        user.credits -= totalCost;
-        for (const product of products) {
-            product.stock -= 1;
-            await product.save({ session });
-        }
-        await user.save({ session });
+            if (error.hasErrorLabel('TransientTransactionError')) {
+                retryCount++;
+                console.log(`TransientTransactionError encountered. Retry attempt ${retryCount}...`);
+                continue;
+            }
 
-        await session.commitTransaction();
-        console.log('Purchase successful');
-        res.status(200).json({ message: "Products purchased successfully", user });
-    } catch (error) {
-        await session.abortTransaction();
-        console.error('Error during purchase:', error);
-        res.status(500).json({ message: error.message });
-    } finally {
-        session.endSession();
+            console.error('Error during purchase:', error);
+            return res.status(500).json({ message: error.message });
+        } finally {
+            session.endSession();
+        }
     }
+
+    console.log('Exceeded retry limit');
+    return res.status(500).json({ message: "Exceeded retry limit" });
 };
-
-
 module.exports = {
   getUsers,
   addCredits,
