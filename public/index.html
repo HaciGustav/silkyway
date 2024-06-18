@@ -1,76 +1,85 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Silkyway</title>
-    <link rel="stylesheet" href="styles/index.css">
-</head>
+    <link rel="stylesheet" href="styles/index.css" />
+  </head>
 
-<body>
+  <body>
     <nav class="navbar">
-        <img src="./pics/logo.jpg" alt="Logo">
-        <ul>
-            <li><a href="#grid">Home</a></li>
-            <li><a href="#scroll">Scroll</a></li>
-            <li><a href="#filter">Filter</a></li>
-            <li><a href="login.html">Login</a></li>
-            <li><a href="signup.html">Sign Up</a></li>
-        </ul>
+      <img src="../assets/logo.jpeg" class="logo" alt="Logo" />
+      <ul>
+        <li><a href="#grid">Home</a></li>
+        <!-- <li><a href="#scroll">Scroll</a></li> -->
+        <!-- <li><a href="#filter">Filter</a></li> -->
+        <li id="login-btn">Login</li>
+        <li id="logout-button">Logout</li>
+        <!-- <li><a href="login.html">Login</a></li> -->
+        <!-- <li><a href="signup.html">Sign Up</a></li> -->
+      </ul>
     </nav>
-
-    <section id="login">
-        <h2>Login</h2>
-        <form onsubmit="login(event)">
-            <input type="email" id="email" placeholder="Email" required>
-            <input type="password" id="password" placeholder="Password" required>
+    <main>
+      <section id="login" class="login-container">
+        <div>
+          <button class="close-login">x</button>
+          <h2>Login</h2>
+          <form onsubmit="login(event)">
+            <input type="email" id="email" placeholder="Email" required />
+            <input
+              type="password"
+              id="password"
+              placeholder="Password"
+              required
+            />
             <button type="submit">Login</button>
-        </form>
-        <p id="login-status"></p>
-        <p id="user-info"></p>
-    </section>
+          </form>
+          <p id="login-status"></p>
+          <p id="user-info"></p>
+        </div>
+      </section>
 
-    <section id="grid" class="grid-section">
+      <section id="grid" class="grid-section">
         <div class="grid-container"></div>
-    </section>
+      </section>
 
-    <section id="scroll" class="horizontal-section">
+      <section id="scroll" class="horizontal-section">
         <h2>Angebote</h2>
         <div class="h-scroll-container">
-            <ul class="h-scroll-wrapper"></ul>
+          <ul class="h-scroll-wrapper"></ul>
         </div>
-    </section>
+      </section>
 
-    <section id="filter" class="flex-section">
+      <section id="filter" class="flex-section">
         <ul class="filter-container">
-            <li class="active" onclick="filter(this, 'all')">Alle Kategorien</li>
-            <li onclick="filter(this, 'cat1')">Hacking</li>
-            <li onclick="filter(this, 'cat2')">Lebensmittel</li>
+          <li class="active" onclick="filter(this, 'all')">Alle Kategorien</li>
+          <li onclick="filter(this, 'cat1')">Hacking</li>
+          <li onclick="filter(this, 'cat2')">Lebensmittel</li>
         </ul>
         <div class="grid-container filter-container-items"></div>
-    </section>
+      </section>
 
-    <div>
+      <div class="cart-container">
         <h2>Cart</h2>
         <ul id="cart-items"></ul>
         <ul id="cart-items"></ul>
         <p id="cart-total">Total: 0</p>
         <button onclick="checkout()">Checkout</button>
-    </div>
-    <button id="logout-button">Logout</button>
-    <button id="empty-cart-button">Empty Cart</button>
-    <div id="admin" style="display:none;">
+        <!-- <button id="logout-button">Logout</button> -->
+        <button id="empty-cart-button">Empty Cart</button>
+      </div>
+      <div id="admin" style="display: none">
         <h2>Admin Panel</h2>
         <form onsubmit="addCredits(event)">
-            <input type="text" id="user-id" placeholder="User ID" required>
-            <input type="number" id="credits" placeholder="Credits" required>
-            <button type="submit">Add Credits</button>
-            <p id="admin-status"></p>
+          <input type="text" id="user-id" placeholder="User ID" required />
+          <input type="number" id="credits" placeholder="Credits" required />
+          <button type="submit">Add Credits</button>
+          <p id="admin-status"></p>
         </form>
-    </div>
+      </div>
 
-    <script defer src="scripts/index.js"></script>
-</body>
-
+      <script defer src="scripts/index.js"></script>
+    </main>
+  </body>
 </html>
