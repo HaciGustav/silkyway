@@ -3,7 +3,8 @@ let token;
 let cart = [];
 let products = [];
 let productStocks = {};
-
+let logo2;
+displayUserInfo();
 // login modal functions
 const openLogin = (e) => {
   const loginContainer = document.querySelector("#login");
@@ -13,7 +14,15 @@ const closeLogin = (e) => {
   const loginContainer = document.querySelector("#login");
   loginContainer.style.display = "none";
 };
-
+// register modal functions
+const openRegister = (e) => {
+  const registerContainer = document.querySelector("#register");
+  registerContainer.style.display = "grid";
+};
+const closeRegister = (e) => {
+  const registerContainer = document.querySelector("#register");
+  registerContainer.style.display = "none";
+};
 document.addEventListener("DOMContentLoaded", () => {
   currentUser = JSON.parse(localStorage.getItem("currentUser"));
   token = localStorage.getItem("token");
@@ -21,16 +30,31 @@ document.addEventListener("DOMContentLoaded", () => {
   displayUserInfo();
   showAdminPanel();
   setupCart();
+  logo2 = document.querySelector(".logo2");
+  const registerBtn = document.getElementById("register-btn");
+  const closeRegisterBtn = document.querySelector(".close-register");
+
+if(closeRegisterBtn) {
+    closeRegisterBtn.addEventListener("click", closeRegister);
+}
+
+  registerBtn.addEventListener("click", openRegister);
+  
 
   const loginBtn = document.getElementById("login-btn");
   const logoutBtn = document.getElementById("logout-button");
+  
 
   if (currentUser) {
     loginBtn.style.display = "none";
+    registerBtn.style.display = "none";
     logoutBtn.style.display = "block";
+    logo2.classList.remove("hidden");
   } else {
     loginBtn.style.display = "block";
+    registerBtn.style.display = "block";
     logoutBtn.style.display = "none";
+    logo2.classList.add("hidden");
   }
 
   const checkoutButton = document.querySelector('button[onclick="checkout()"]');
@@ -62,6 +86,7 @@ document.addEventListener("DOMContentLoaded", () => {
   addAllButton.addEventListener("click", () => {
     products.forEach((product) => {
       addToCart(product._id, product.price);
+      updateCartTotal();
     });
   });
 
@@ -114,6 +139,8 @@ function displayProducts(products) {
     button.addEventListener("click", () => {
       const productId = button.parentElement.getAttribute("data-product-id");
       addToCart(productId);
+      updateCartDisplay();
+      updateCartTotal();
       productStocks[productId]--; // Reduce the stock for this product
       button.parentElement.querySelector(".overlay").textContent = `${
         products.find((p) => p._id === productId).name
@@ -136,13 +163,16 @@ function addToCart(productId) {
     const existingItem = cart.find((item) => item._id === productId);
     if (existingItem) {
       existingItem.quantity += 1;
+      updateCartTotal();
     } else {
       cart.push({ ...product, quantity: 1 });
+
     }
     product.stock -= 1;
     localStorage.setItem("cart", JSON.stringify(cart));
     updateCartDisplay();
     displayProducts(products);
+    updateCartTotal();
   }
 }
 
@@ -218,6 +248,10 @@ async function checkout() {
     displayProducts(products);
   }
 }
+function updateCartTotal() {
+    const total = cart.reduce((sum, product) => sum + (product.price * product.quantity), 0);
+    document.getElementById('cart-total').textContent = 'Total: ' + total;
+  }
 async function addCredits(event) {
   event.preventDefault();
   const userId = currentUser._id;
@@ -280,6 +314,7 @@ async function login(event) {
       window.location.reload(); // Refresh to update UI based on login status
       loginBtn.style.display = "none";
       logoutBtn.style.display = "block";
+      logo2.classList.remove("hidden");
     } else {
       document.getElementById("login-status").textContent =
         "Login failed: " + data.message;
@@ -289,7 +324,46 @@ async function login(event) {
       "Error: " + error.message;
   }
 }
+async function register(event) {
+  event.preventDefault();
 
+  const firstname = document.getElementById("firstname").value;
+  const lastname = document.getElementById("lastname").value;
+  const email = document.getElementById("reg-email").value;
+  const password = document.getElementById("reg-password").value;
+  const address = document.getElementById("address").value;
+
+  try {
+    const response = await fetch("http://localhost:8080/api/auth/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ firstname, lastname, email, password, address }),
+    });
+
+    const responseText = await response.text();
+    console.log(responseText);
+
+    // Then parse it as JSON if it's valid JSON
+    const data = JSON.parse(responseText);
+
+    if (response.ok) {
+      // Store token and user data in local storage
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("currentUser", JSON.stringify(data.user));
+
+      document.getElementById("register-status").textContent = "Registration successful!";
+      window.location.href = "index.html"; // Redirect to homepage after successful registration
+    } else {
+      document.getElementById("register-status").textContent =
+        "Registration failed: " + data.message;
+    }
+  } catch (error) {
+    document.getElementById("register-status").textContent =
+      "Error: " + error.message;
+  }
+}
 function logout() {
   localStorage.removeItem("currentUser");
   localStorage.removeItem("token");
@@ -299,12 +373,15 @@ function logout() {
   displayUserInfo();
   const loginBtn = document.getElementById("login-btn");
   const logoutBtn = document.getElementById("logout-button");
+  const registerBtn = document.getElementById("register-btn");
   loginBtn.style.display = "block";
+  registerBtn.style.display = "block";
   logoutBtn.style.display = "none";
+  logo2.classList.add("hidden");
 }
 
 async function fetchCurrentUser() {
-  const token = localStorage.getItem("token"); // Replace this with the actual way you're storing the token
+  const token = localStorage.getItem("token"); 
   const response = await fetch("http://localhost:8080/api/currentUser", {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -320,14 +397,21 @@ async function fetchCurrentUser() {
 }
 
 async function displayUserInfo() {
-  const userInfo = document.getElementById("user-info");
-  const currentUser = await fetchCurrentUser();
-  if (currentUser) {
-    userInfo.textContent = `User ID: ${currentUser.id}, Name: ${currentUser.firstname} ${currentUser.lastname}, Silky Dinars: ${currentUser.credits}`;
-  } else {
-    userInfo.textContent = "No user is currently logged in.";
+    const userInfoDisplay = document.getElementById("user-info-display");
+    const silkyDinarsJar = document.getElementById("silky-dinars-jar");
+    const currentUser = await fetchCurrentUser();
+    if (currentUser) {
+      
+      userInfoDisplay.textContent = `User ID: ${currentUser.id}, Name: ${currentUser.firstname} ${currentUser.lastname}, Address: ${currentUser.address}`;
+      userInfoDisplay.addEventListener('click', () => {
+        alert(`User ID: ${currentUser.id}, Name: ${currentUser.firstname} ${currentUser.lastname}, Adress: ${currentUser.address}`);
+      });
+      silkyDinarsJar.textContent = `Silky Rubel Jar: ${currentUser.credits}`;
+    } else {
+      userInfoDisplay.textContent = "No user is currently logged in.";
+      silkyDinarsJar.textContent = "";
+    }
   }
-}
 
 function emptyCart() {
   cart = [];
@@ -336,6 +420,7 @@ function emptyCart() {
   //   alert("Cart emptied!");
   products = fetchProducts();
   displayProducts(products);
+  updateCartTotal();
 }
 
 function showAdminPanel() {
