@@ -45,9 +45,11 @@ if(closeRegisterBtn) {
 
   if (currentUser) {
     loginBtn.style.display = "none";
+    registerBtn.style.display = "none";
     logoutBtn.style.display = "block";
   } else {
     loginBtn.style.display = "block";
+    registerBtn.style.display = "block";
     logoutBtn.style.display = "none";
   }
 
@@ -391,6 +393,7 @@ async function displayUserInfo() {
     const silkyDinarsJar = document.getElementById("silky-dinars-jar");
     const currentUser = await fetchCurrentUser();
     if (currentUser) {
+      
       userInfoDisplay.textContent = `User ID: ${currentUser.id}, Name: ${currentUser.firstname} ${currentUser.lastname}, Adress: ${currentUser.address}`;
       userInfoDisplay.addEventListener('click', () => {
         alert(`User ID: ${currentUser.id}, Name: ${currentUser.firstname} ${currentUser.lastname}, Adress: ${currentUser.address}`);
