@@ -373,7 +373,9 @@ function logout() {
   displayUserInfo();
   const loginBtn = document.getElementById("login-btn");
   const logoutBtn = document.getElementById("logout-button");
+  const registerBtn = document.getElementById("register-btn");
   loginBtn.style.display = "block";
+  registerBtn.style.display = "block";
   logoutBtn.style.display = "none";
   logo2.classList.add("hidden");
 }
