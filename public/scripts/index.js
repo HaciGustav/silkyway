@@ -13,7 +13,15 @@ const closeLogin = (e) => {
   const loginContainer = document.querySelector("#login");
   loginContainer.style.display = "none";
 };
-
+// register modal functions
+const openRegister = (e) => {
+  const registerContainer = document.querySelector("#register");
+  registerContainer.style.display = "grid";
+};
+const closeRegister = (e) => {
+  const registerContainer = document.querySelector("#register");
+  registerContainer.style.display = "none";
+};
 document.addEventListener("DOMContentLoaded", () => {
   currentUser = JSON.parse(localStorage.getItem("currentUser"));
   token = localStorage.getItem("token");
@@ -21,6 +29,16 @@ document.addEventListener("DOMContentLoaded", () => {
   displayUserInfo();
   showAdminPanel();
   setupCart();
+
+  const registerBtn = document.getElementById("register-btn");
+  const closeRegisterBtn = document.querySelector(".close-register");
+
+if(closeRegisterBtn) {
+    closeRegisterBtn.addEventListener("click", closeRegister);
+}
+
+  registerBtn.addEventListener("click", openRegister);
+  
 
   const loginBtn = document.getElementById("login-btn");
   const logoutBtn = document.getElementById("logout-button");
@@ -299,7 +317,46 @@ async function login(event) {
       "Error: " + error.message;
   }
 }
+async function register(event) {
+  event.preventDefault();
 
+  const firstname = document.getElementById("firstname").value;
+  const lastname = document.getElementById("lastname").value;
+  const email = document.getElementById("reg-email").value;
+  const password = document.getElementById("reg-password").value;
+  const address = document.getElementById("address").value;
+
+  try {
+    const response = await fetch("http://localhost:8080/api/auth/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ firstname, lastname, email, password, address }),
+    });
+
+    const responseText = await response.text();
+    console.log(responseText);
+
+    // Then parse it as JSON if it's valid JSON
+    const data = JSON.parse(responseText);
+
+    if (response.ok) {
+      // Store token and user data in local storage
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("currentUser", JSON.stringify(data.user));
+
+      document.getElementById("register-status").textContent = "Registration successful!";
+      window.location.href = "index.html"; // Redirect to homepage after successful registration
+    } else {
+      document.getElementById("register-status").textContent =
+        "Registration failed: " + data.message;
+    }
+  } catch (error) {
+    document.getElementById("register-status").textContent =
+      "Error: " + error.message;
+  }
+}
 function logout() {
   localStorage.removeItem("currentUser");
   localStorage.removeItem("token");
@@ -334,9 +391,9 @@ async function displayUserInfo() {
     const silkyDinarsJar = document.getElementById("silky-dinars-jar");
     const currentUser = await fetchCurrentUser();
     if (currentUser) {
-      userInfoDisplay.textContent = `User ID: ${currentUser.id}, Name: ${currentUser.firstname} ${currentUser.lastname}`;
+      userInfoDisplay.textContent = `User ID: ${currentUser.id}, Name: ${currentUser.firstname} ${currentUser.lastname}, Adress: ${currentUser.address}`;
       userInfoDisplay.addEventListener('click', () => {
-        alert(`User ID: ${currentUser.id}, Name: ${currentUser.firstname} ${currentUser.lastname}`);
+        alert(`User ID: ${currentUser.id}, Name: ${currentUser.firstname} ${currentUser.lastname}, Adress: ${currentUser.address}`);
       });
       silkyDinarsJar.textContent = `Silky Dinars Jar: ${currentUser.credits}`;
     } else {

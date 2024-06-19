@@ -17,6 +17,7 @@
         <!-- <li><a href="#scroll">Scroll</a></li> -->
         <!-- <li><a href="#filter">Filter</a></li> -->
         <li id="login-btn">Login</li>
+        <li id="register-btn">Register</li>
         <li id="logout-button">Logout</li>
         <!-- <li><a href="login.html">Login</a></li> -->
         <!-- <li><a href="signup.html">Sign Up</a></li> -->
@@ -37,6 +38,24 @@
               required
             />
             <button type="submit">Login</button>
+          </form>
+          <p id="login-status"></p>
+          <p id="user-info"></p>
+        </div>
+      </section>
+      <section id="register" class="login-container">
+        <div>
+          <button class="close-register">x</button>
+          <h2>Register</h2>
+          <form onsubmit="register(event)">
+      
+            <input type="text" id="firstname" placeholder="First Name" required>
+            <input type="text" id="lastname" placeholder="Last Name" required>
+            <input type="email" id="reg-email" placeholder="Email" required>
+            <input type="password" id="reg-password" placeholder="Password" required minlength="6">
+            <input type="text" id="address" placeholder="Address" required>
+            <button type="submit">Register</button>
+            <p id="register-status"></p>
           </form>
           <p id="login-status"></p>
           <p id="user-info"></p>
