@@ -13,6 +13,16 @@ main {
   position: relative;
   min-height: 100vh;
 }
+#silky-dinars-jar {
+  display: flex;
+  align-items: center;
+  color: gold;
+}
+
+.logo2 {
+  margin-right: 10px;
+}
+
 
 .navbar {
   position: sticky;
