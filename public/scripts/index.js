@@ -30,31 +30,30 @@ document.addEventListener("DOMContentLoaded", () => {
   displayUserInfo();
   showAdminPanel();
   setupCart();
-  logo2 = document.querySelector(".logo2");
+  logo2 = document.querySelector(".credit-info");
   const registerBtn = document.getElementById("register-btn");
   const closeRegisterBtn = document.querySelector(".close-register");
 
-if(closeRegisterBtn) {
+  if (closeRegisterBtn) {
     closeRegisterBtn.addEventListener("click", closeRegister);
-}
+  }
 
   registerBtn.addEventListener("click", openRegister);
-  
 
   const loginBtn = document.getElementById("login-btn");
   const logoutBtn = document.getElementById("logout-button");
-  
 
   if (currentUser) {
     loginBtn.style.display = "none";
     registerBtn.style.display = "none";
     logoutBtn.style.display = "block";
-    logo2.classList.remove("hidden");
+    logo2.style.display = "flex";
+    // logo2.classList.remove("hidden");
   } else {
     loginBtn.style.display = "block";
     registerBtn.style.display = "block";
     logoutBtn.style.display = "none";
-    logo2.classList.add("hidden");
+    logo2.style.display = "none";
   }
 
   const checkoutButton = document.querySelector('button[onclick="checkout()"]');
@@ -166,7 +165,6 @@ function addToCart(productId) {
       updateCartTotal();
     } else {
       cart.push({ ...product, quantity: 1 });
-
     }
     product.stock -= 1;
     localStorage.setItem("cart", JSON.stringify(cart));
@@ -249,9 +247,13 @@ async function checkout() {
   }
 }
 function updateCartTotal() {
-    const total = cart.reduce((sum, product) => sum + (product.price * product.quantity), 0);
-    document.getElementById('cart-total').textContent = 'Total: ' + total;
-  }
+  const total = cart.reduce(
+    (sum, product) => sum + product.price * product.quantity,
+    0
+  );
+  document.getElementById("cart-total").textContent =
+    "Total: " + total?.toFixed(2);
+}
 async function addCredits(event) {
   event.preventDefault();
   const userId = currentUser._id;
@@ -353,7 +355,8 @@ async function register(event) {
       localStorage.setItem("token", data.token);
       localStorage.setItem("currentUser", JSON.stringify(data.user));
 
-      document.getElementById("register-status").textContent = "Registration successful!";
+      document.getElementById("register-status").textContent =
+        "Registration successful!";
       window.location.href = "index.html"; // Redirect to homepage after successful registration
     } else {
       document.getElementById("register-status").textContent =
@@ -377,11 +380,12 @@ function logout() {
   loginBtn.style.display = "block";
   registerBtn.style.display = "block";
   logoutBtn.style.display = "none";
-  logo2.classList.add("hidden");
+  logo2 = document.querySelector(".credit-info");
+  logo2.style.display = "none";
 }
 
 async function fetchCurrentUser() {
-  const token = localStorage.getItem("token"); 
+  const token = localStorage.getItem("token");
   const response = await fetch("http://localhost:8080/api/currentUser", {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -397,21 +401,22 @@ async function fetchCurrentUser() {
 }
 
 async function displayUserInfo() {
-    const userInfoDisplay = document.getElementById("user-info-display");
-    const silkyDinarsJar = document.getElementById("silky-dinars-jar");
-    const currentUser = await fetchCurrentUser();
-    if (currentUser) {
-      
-      userInfoDisplay.textContent = `User ID: ${currentUser.id}, Name: ${currentUser.firstname} ${currentUser.lastname}, Address: ${currentUser.address}`;
-      userInfoDisplay.addEventListener('click', () => {
-        alert(`User ID: ${currentUser.id}, Name: ${currentUser.firstname} ${currentUser.lastname}, Adress: ${currentUser.address}`);
-      });
-      silkyDinarsJar.textContent = `Silky Rubel Jar: ${currentUser.credits}`;
-    } else {
-      userInfoDisplay.textContent = "No user is currently logged in.";
-      silkyDinarsJar.textContent = "";
-    }
+  const userInfoDisplay = document.getElementById("user-info-display");
+  const silkyDinarsJar = document.getElementById("silky-dinars-jar");
+  const currentUser = await fetchCurrentUser();
+  if (currentUser) {
+    userInfoDisplay.textContent = `User ID: ${currentUser.id}, Name: ${currentUser.firstname} ${currentUser.lastname}, Address: ${currentUser.address}`;
+    userInfoDisplay.addEventListener("click", () => {
+      alert(
+        `User ID: ${currentUser.id}, Name: ${currentUser.firstname} ${currentUser.lastname}, Adress: ${currentUser.address}`
+      );
+    });
+    silkyDinarsJar.textContent = `Silky Rubel Jar: ${currentUser.credits}`;
+  } else {
+    userInfoDisplay.textContent = "";
+    silkyDinarsJar.textContent = "";
   }
+}
 
 function emptyCart() {
   cart = [];
