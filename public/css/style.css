@@ -51,40 +51,6 @@ body {
   gap: 1rem;
 }
 
-.flex-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-
-.filter-container {
-  display: flex;
-  flex-flow: row wrap;
-  gap: 1rem;
-  width: 100%;
-  list-style-type: none;
-  padding: 0;
-}
-
-.filter-container > li {
-  flex: 1;
-  background-color: #aaa;
-  color: white;
-  font-weight: bold;
-  text-align: center;
-  border-radius: 5px;
-  padding: 1rem 0.5rem;
-  transition: flex 0.5s ease-in-out;
-}
-
-.filter-container > li:hover {
-  background-color: #aaf;
-}
-
-.filter-container > li.active {
-  flex: 2;
-}
-
 .product_popover {
   height: 80vh;
   width: 80vw;
@@ -117,7 +83,6 @@ body {
   color: gold;
 }
 
-/*
 .grid-item {
   position: relative;
   display: block;
@@ -157,7 +122,7 @@ body {
   width: 100%;
   text-align: center;
   padding-block: 1rem;
-}*/
+}
 
 /*
 @media (max-width: 768px) {
