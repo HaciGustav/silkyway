@@ -398,7 +398,7 @@ async function displayUserInfo() {
       userInfoDisplay.addEventListener('click', () => {
         alert(`User ID: ${currentUser.id}, Name: ${currentUser.firstname} ${currentUser.lastname}, Adress: ${currentUser.address}`);
       });
-      silkyDinarsJar.textContent = `Silky Dinars Jar: ${currentUser.credits}`;
+      silkyDinarsJar.textContent = `Silky Rubel Jar: ${currentUser.credits}`;
     } else {
       userInfoDisplay.textContent = "No user is currently logged in.";
       silkyDinarsJar.textContent = "";
