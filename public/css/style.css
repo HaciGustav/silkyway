@@ -199,9 +199,24 @@ body {
   background-color: rgba(0, 0, 0, 0.3333333333);
 }
 
-button:has(.grid-item) {
-  border: none;
-  background-color: transparent;
+.product_popover .product {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-/*# sourceMappingURL=style.css.map */
+.logo2 {
+  height: 50px; /* Adjust as needed */
+  width: 50px; /* Adjust as needed */
+  margin-right: 10px; /* Adjust as needed */
+}
+
+#silky-dinars-jar {
+  display: flex;
+  align-items: center;
+  color: gold;
+}

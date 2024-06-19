@@ -3,6 +3,7 @@ let token;
 let cart = [];
 let products = [];
 let productStocks = {};
+let logo2;
 displayUserInfo();
 // login modal functions
 const openLogin = (e) => {
@@ -29,7 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
   displayUserInfo();
   showAdminPanel();
   setupCart();
-
+  logo2 = document.querySelector(".logo2");
   const registerBtn = document.getElementById("register-btn");
   const closeRegisterBtn = document.querySelector(".close-register");
 
@@ -42,15 +43,18 @@ if(closeRegisterBtn) {
 
   const loginBtn = document.getElementById("login-btn");
   const logoutBtn = document.getElementById("logout-button");
+  
 
   if (currentUser) {
     loginBtn.style.display = "none";
     registerBtn.style.display = "none";
     logoutBtn.style.display = "block";
+    logo2.classList.remove("hidden");
   } else {
     loginBtn.style.display = "block";
     registerBtn.style.display = "block";
     logoutBtn.style.display = "none";
+    logo2.classList.add("hidden");
   }
 
   const checkoutButton = document.querySelector('button[onclick="checkout()"]');
@@ -310,6 +314,7 @@ async function login(event) {
       window.location.reload(); // Refresh to update UI based on login status
       loginBtn.style.display = "none";
       logoutBtn.style.display = "block";
+      logo2.classList.remove("hidden");
     } else {
       document.getElementById("login-status").textContent =
         "Login failed: " + data.message;
@@ -370,6 +375,7 @@ function logout() {
   const logoutBtn = document.getElementById("logout-button");
   loginBtn.style.display = "block";
   logoutBtn.style.display = "none";
+  logo2.classList.add("hidden");
 }
 
 async function fetchCurrentUser() {
@@ -394,7 +400,7 @@ async function displayUserInfo() {
     const currentUser = await fetchCurrentUser();
     if (currentUser) {
       
-      userInfoDisplay.textContent = `User ID: ${currentUser.id}, Name: ${currentUser.firstname} ${currentUser.lastname}, Adress: ${currentUser.address}`;
+      userInfoDisplay.textContent = `User ID: ${currentUser.id}, Name: ${currentUser.firstname} ${currentUser.lastname}, Address: ${currentUser.address}`;
       userInfoDisplay.addEventListener('click', () => {
         alert(`User ID: ${currentUser.id}, Name: ${currentUser.firstname} ${currentUser.lastname}, Adress: ${currentUser.address}`);
       });
