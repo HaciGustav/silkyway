@@ -5,6 +5,7 @@ let products = [];
 let productStocks = {};
 let logo2;
 displayUserInfo();
+
 // login modal functions
 const openLogin = (e) => {
   const loginContainer = document.querySelector("#login");
@@ -31,7 +32,7 @@ document.addEventListener("DOMContentLoaded", () => {
   displayUserInfo();
   showAdminPanel();
   setupCart();
-
+  displayUserAvatar();
   logo2 = document.querySelector(".credit-info");
 
   const registerBtn = document.getElementById("register-btn");
@@ -111,6 +112,16 @@ async function fetchCurrentUser() {
   }
 }
 
+async function displayUserAvatar() {
+  const userAvatarDisplay = document.getElementById("user-avatar-display");
+  const currentUser = await fetchCurrentUser();
+  
+  const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.firstname)}+${encodeURIComponent(currentUser.lastname)}`;
+    
+  const img = document.createElement('img');
+  img.src = avatarUrl;  
+  userAvatarDisplay.appendChild(img);
+}
 async function fetchProducts() {
   try {
     const response = await fetch("http://localhost:8080/api/products");
@@ -408,6 +419,7 @@ async function displayUserInfo() {
     silkyDinarsJar.textContent = "";
   }
 }
+
 function emptyCart() {
   cart = {};
   localStorage.removeItem("cart");

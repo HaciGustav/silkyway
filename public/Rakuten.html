@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rakuten Products</title>
+    <link rel="stylesheet" href="styles/index.css" />
+</head>
+<body>
+    <nav class="navbar">
+        <img src="https://raw.githubusercontent.com/HaciGustav/silkyway/test/assets/logo.png" class="logo" alt="Logo" />
+        <div class="credit-info">
+            <img src="https://raw.githubusercontent.com/HaciGustav/silkyway/test/assets/friend.png" alt="friend" class="logo2" />
+            <div id="silky-dinars-jar"></div>
+        </div>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="FakeStore.html">Fake Store</a></li>
+            
+        
+        </ul>
+    </nav>
+    <main>
+        <section id="product-list" class="grid-section">
+            <div class="grid-container" id="rakuten-products"></div>
+        </section>
+        <div class="cart-container">
+            <h2>Cart</h2>
+            <ul id="cart-items"></ul>
+            <p id="cart-total">Total: 0</p>
+            <button onclick="checkout()">Checkout</button>
+            <button id="empty-cart-button">Empty Cart</button>
+        </div>
+        <script defer src="scripts/rakuten.js"></script>
+    </main>
+</body>
+</html>
